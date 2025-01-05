@@ -1,0 +1,23 @@
+.header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 20px;
+  background-color: #ffcc80;
+  border-bottom: 1px solid #ddd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-title {
+  font-size: 32px;
+  font-weight: 600;
+  color: #333;
+  font-family: 'Arial', sans-serif;
+  letter-spacing: 1px;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.header-title:hover {
+  color: #ffffff;
+  transform: scale(1.05);
+}
