@@ -1,0 +1,149 @@
+.book-carousel {
+  margin: 40px 0;
+  padding: 20px;
+  background: linear-gradient(135deg, #fdfbfb, #ebedee);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.book-carousel h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2rem;
+  color: #5d5c61;
+  font-weight: bold;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.book-item {
+  background-color: #f5f5dc;
+  padding: 12px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin: 0 10px;
+  flex: 0 0 calc(33.333% - 20px);
+}
+
+.book-item img {
+  max-width: 80%;
+  height: auto;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+  margin: 0 auto;
+}
+
+.book-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.book-item:hover img {
+  transform: scale(1.1);
+}
+
+.book-info {
+  position: absolute;
+  bottom: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  text-align: center;
+  max-width: 90%;
+}
+
+.book-item:hover .book-info {
+  opacity: 1;
+  visibility: visible;
+}
+
+.book-info h3 {
+  margin: 5px 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #37474f;
+}
+
+.book-info p {
+  margin: 0;
+  font-size: 1rem;
+  color: #607d8b;
+}
+
+.custom-arrow {
+  position: absolute;
+  top: 50%;
+  font-size: 35px;
+  cursor: pointer;
+  color: #ffffff;
+  z-index: 2;
+  background-color: #607d8b;
+  border-radius: 50%;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+}
+
+.custom-arrow.next {
+  right: 15px;
+}
+
+.custom-arrow.prev {
+  left: 15px;
+}
+
+.custom-arrow:hover {
+  background-color: #ffcc80;
+  transform: none;
+}
+
+
+.slick-prev,
+.slick-next {
+  display: none;
+}
+
+
+.slick-dots li button:before {
+  color: #607d8b;
+  font-size: 12px;
+  transition: color;
+}
+
+.slick-dots li.slick-active button:before {
+  color: #ffcc80;
+}
+
+
+@media (max-width: 768px) {
+  .book-carousel h2 {
+    font-size: 1.5rem;
+  }
+
+  .book-item {
+    padding: 10px;
+    flex: 0 0 calc(50% - 20px);
+  }
+
+  .book-info h3 {
+    font-size: 1rem;
+  }
+
+  .book-info p {
+    font-size: 0.9rem;
+  }
+}
