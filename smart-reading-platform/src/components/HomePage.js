@@ -32,6 +32,24 @@ const HomePage = () => {
         <p>"A reader lives a thousand lives before he dies." – George R.R. Martin</p>
       </div>
 
+        <div className="description-container">
+        <div className="section-description">
+          <h2>Not sure what to read next? 🤔</h2>
+          <p>
+            You've come to the right place. Let us know what genres or books you've loved in the past,
+            and our AI-powered system will give you precise and personalized recommendations that match your reading tastes. 📚✨
+          </p>
+        </div>
+
+        <div className="section-description">
+          <h2>Tracking your reading progress? 📊</h2>
+          <p>
+            With our platform, you can easily track your reading journey and see your progress in real-time. Keep an eye on the books
+            you've read, the ones you're currently reading, and those you plan to read. Stay motivated and celebrate your reading milestones! 🎉📖
+          </p>
+        </div>
+      </div>
+
       <BookCarousel title="New Arrivals" books={newBooks} />
 
       <BookCarousel title="Populer Choices" books={popularBooks} />
