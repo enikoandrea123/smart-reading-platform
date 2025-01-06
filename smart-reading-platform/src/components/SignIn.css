@@ -1,0 +1,129 @@
+.sign-in-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f5dc;
+  font-family: 'Arial', sans-serif;
+  padding: 20px;
+}
+
+.sign-in-box {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+.shelfmate-title {
+  font-size: 2rem;
+  color: #37474f;
+  margin-bottom: 15px;
+}
+
+.sign-in-title {
+  font-size: 1.8rem;
+  color: #4a4a4a;
+  margin-bottom: 20px;
+}
+
+.sign-in-form {
+  text-align: left;
+}
+
+.input-label {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.sign-in-input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.password-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.forgot-password-link {
+  font-size: 0.8rem;
+  color: #0073e6;
+  text-decoration: none;
+}
+
+.forgot-password-link:hover {
+  text-decoration: underline;
+}
+
+.sign-in-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #37474f;
+  color: #ffffff;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.sign-in-button:hover {
+  background-color: #333;
+}
+
+.sign-in-terms {
+  margin-top: 15px;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.sign-in-link {
+  color: #0073e6;
+  text-decoration: none;
+}
+
+.sign-in-link:hover {
+  text-decoration: underline;
+}
+
+.divider-line {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 20px 0;
+}
+
+.sign-up-section p {
+  font-size: 0.9rem;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.sign-up-button {
+  width: 100%;
+  padding: 12px;
+  background-color: #ffcc80;
+  color: #333;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.sign-up-button:hover {
+  background-color: #ffc170;
+}
