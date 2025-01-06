@@ -15,6 +15,7 @@
   font-family: 'Arial', sans-serif;
   letter-spacing: 1px;
   transition: color 0.3s ease, transform 0.3s ease;
+  text-decoration: none;
 }
 
 .header-title:hover {
