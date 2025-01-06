@@ -7,6 +7,10 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import SignIn from  './components/SignIn';
 import SignUp from './components/SignUp'
+import PrivacyPolicy from './components/PrivacyPolicy';
+import Terms from './components/Terms';
+import About from './components/About';
+import ForgotPassword from './components/ForgotPassword';
 
 function App() {
   return (
@@ -16,6 +20,10 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<SignUp />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/forgot-password" element={<ForgotPassword/>} />
     </Routes>
     <Footer/>
     </Router>
