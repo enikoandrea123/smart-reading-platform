@@ -1,0 +1,66 @@
+.login-form {
+  background-color: #fdfdfd;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin: 20px auto;
+  max-width: 400px;
+}
+
+.login-form h2 {
+  font-size: 1.8rem;
+  color: #4a4a4a;
+  margin-bottom: 20px;
+}
+
+.login-button {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.login-button.email {
+  background-color: #37474f;
+  color: #fff;
+}
+
+.login-button:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+.terms {
+  font-size: 0.8rem;
+  color: #666;
+  margin: 15px 0;
+}
+
+.terms a {
+  color: #0073e6;
+  text-decoration: none;
+}
+
+.terms a:hover {
+  text-decoration: underline;
+}
+
+.member {
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.member a {
+  color: #0073e6;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.member a:hover {
+  text-decoration: underline;
+}

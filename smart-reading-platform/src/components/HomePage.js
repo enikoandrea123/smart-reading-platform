@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import BookCarousel from './BookCarousel';
 import './HomePage.css';
+import Login from './Login';
 
 const HomePage = () => {
   const [newBooks, setNewBooks] = useState([]);
@@ -40,6 +41,8 @@ const HomePage = () => {
             and our AI-powered system will give you precise and personalized recommendations that match your reading tastes. 📚✨
           </p>
         </div>
+
+     <Login />
 
         <div className="section-description">
           <h2>Tracking your reading progress? 📊</h2>
