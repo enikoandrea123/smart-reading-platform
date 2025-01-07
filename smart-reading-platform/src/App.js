@@ -11,6 +11,7 @@ import PrivacyPolicy from './components/PrivacyPolicy';
 import Terms from './components/Terms';
 import About from './components/About';
 import ForgotPassword from './components/ForgotPassword';
+import Search from './components/Search';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/terms" element={<Terms />} />
         <Route path="/about" element={<About />} />
         <Route path="/forgot-password" element={<ForgotPassword/>} />
+        <Route path="/search" element={<Search/>} />
     </Routes>
     <Footer/>
     </Router>
