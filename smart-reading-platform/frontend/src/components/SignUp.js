@@ -8,20 +8,39 @@ const SignUp = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (password !== confirmPassword) {
-      setError("Passwords don't match.");
-      return;
+  if (password !== confirmPassword) {
+    setError("Passwords don't match.");
+    return;
+  }
+  if (password.length < 6) {
+    setError('Password must be at least 6 characters.');
+    return;
+  }
+
+  try {
+    const response = await fetch('http://127.0.0.1:5000/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name, email, password }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert('Account created successfully!');
+      window.location.href = '/signin';
+    } else {
+      setError(data.message || 'An error occurred');
     }
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters.');
-      return;
-    }
-    console.log("Account created:", { name, email, password });
-    setError('');
-  };
+  } catch (err) {
+    setError('Unable to connect to the server');
+  }
+};
 
   return (
     <div className="sign-in-container">

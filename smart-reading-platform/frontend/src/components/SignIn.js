@@ -1,15 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './SignIn.css';
 
 const SignIn = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch('http://127.0.0.1:5000/signin', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('Login successful!');
+        window.location.href = '/dashboard';
+      } else {
+        setError(data.message || 'Invalid email or password');
+      }
+    } catch (err) {
+      setError('Unable to connect to the server');
+    }
+  };
+
   return (
     <div className="sign-in-container">
       <div className="sign-in-box">
         <h1 className="shelfmate-title">ShelfMate</h1>
         <h2 className="sign-in-title">Sign In</h2>
 
-        <form className="sign-in-form">
+        {error && <p style={{ color: 'red' }}>{error}</p>}
 
+        <form className="sign-in-form" onSubmit={handleLogin}>
           <label htmlFor="email" className="input-label">
             Email
           </label>
@@ -18,6 +48,8 @@ const SignIn = () => {
             type="email"
             placeholder="Enter your email"
             className="sign-in-input"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
 
@@ -34,6 +66,8 @@ const SignIn = () => {
             type="password"
             placeholder="Enter your password"
             className="sign-in-input"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
 
