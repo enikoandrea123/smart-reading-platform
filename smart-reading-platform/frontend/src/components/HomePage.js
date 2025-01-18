@@ -6,6 +6,8 @@ import Login from './Login';
 const HomePage = () => {
   const [newBooks, setNewBooks] = useState([]);
   const [popularBooks, setPopularBooks] = useState([]);
+  const [recommendedBooks, setRecommendedBooks] = useState([]);
+  const [user, setUser] = useState(null);
 
   // samle API should be replaced
   useEffect(() => {
@@ -23,13 +25,28 @@ const HomePage = () => {
 
     setNewBooks(mockBooks);
     setPopularBooks(mockBooks);
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+      setRecommendedBooks(mockBooks);
+    }
   }, []);
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem('user');
+    window.location.href = '/';
+  };
 
   return (
     <div className="app">
 
       <div className="welcome-section">
-        <h1>Welcome to ShelfMate!</h1>
+        {user ? (
+          <h1>Welcome back, {user.name}!</h1>
+        ) : (
+          <h1>Welcome to ShelfMate!</h1>
+        )}
         <p>"A reader lives a thousand lives before he dies." – George R.R. Martin</p>
       </div>
 
@@ -42,7 +59,8 @@ const HomePage = () => {
           </p>
         </div>
 
-     <Login />
+
+        {!user && <Login />}
 
         <div className="section-description">
           <h2>Tracking your reading progress? 📊</h2>
@@ -52,6 +70,10 @@ const HomePage = () => {
           </p>
         </div>
       </div>
+
+        {user && (
+        <BookCarousel title={`Recommended for You`} books={recommendedBooks} />
+      )}
 
       <BookCarousel title="New Arrivals" books={newBooks} />
 

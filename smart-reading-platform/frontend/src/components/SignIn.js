@@ -21,8 +21,9 @@ const SignIn = () => {
       const data = await response.json();
 
       if (response.ok) {
+        localStorage.setItem('user', JSON.stringify(data.user));
         alert('Login successful!');
-        window.location.href = '/dashboard';
+        window.location.href = '/';
       } else {
         setError(data.message || 'Invalid email or password');
       }
