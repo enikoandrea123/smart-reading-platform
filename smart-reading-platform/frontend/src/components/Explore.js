@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./Search.css";
+import "./Explore.css";
 
 // just sample data for books
 const sampleBooks = [
