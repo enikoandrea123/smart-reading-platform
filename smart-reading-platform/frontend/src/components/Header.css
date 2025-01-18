@@ -22,3 +22,34 @@
   color: #ffffff;
   transform: scale(1.05);
 }
+
+.header-right {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.logout-button {
+  padding: 10px 20px;
+  background-color: #37474f;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+.logout-button:focus {
+  outline: none;
+}
+
+.logout-button:active {
+  transform: scale(0.98);
+}
