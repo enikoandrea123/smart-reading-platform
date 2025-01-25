@@ -22,7 +22,7 @@ const Header = () => {
     <header className="header">
       <Link to="/" className="header-title">ShelfMate</Link>
 
-      {user && (
+      {user ? (
         <div className="header-nav-container">
           <nav className="header-nav">
             <Link to="/" className="nav-link">Home</Link>
@@ -34,6 +34,8 @@ const Header = () => {
           </nav>
           <button onClick={handleLogout} className="logout-button">Log Out</button>
         </div>
+      ) : (
+      <></>
       )}
     </header>
   );

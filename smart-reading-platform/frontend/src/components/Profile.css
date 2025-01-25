@@ -1,29 +1,165 @@
- .profile-container {
-  background-color: #fdfdfd;
+.profile-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f5dc;
+  font-family: 'Arial', sans-serif;
+  padding: 20px;
+}
+
+.profile-container {
+  background-color: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  width: 100%;
+  max-width: 500px;
+}
+
+.profile-container h2 {
+  font-size: 2rem;
+  color: #37474f;
+  margin-bottom: 15px;
+}
+
+.profile-container p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.profile-container .success-message {
+  color: #388e3c;
+  font-size: 1rem;
+  margin-top: 15px;
+}
+
+.profile-container .error-message {
+  color: #d32f2f;
+  font-size: 1rem;
+  margin-top: 15px;
+}
+
+.profile-container input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.profile-container button {
+  width: 100%;
+  padding: 12px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.profile-container button:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+}
+
+.change-password-button {
+  background-color: #37474f;
+  color: #fff;
+}
+
+.change-password-button:hover {
+  background-color: #333;
+}
+
+.delete-account-button {
+  background-color: #d32f2f;
+  color: #fff;
+}
+
+.delete-account-button:hover {
+  background-color: #b71c1c;
+}
+
+.profile-container button:disabled {
+  background-color: #c0c0c0;
+  cursor: not-allowed;
+}
+
+.divider-line {
+  border: none;
+  border-top: 1px solid #ccc;
+  margin: 20px 0;
+}
+
+.highlight-email {
+  font-weight: bold;
+  color: #37474f;
+  font-size: 1.1rem;
+}
+
+.change-password-btn {
+  background-color: #37474f;
+  color: white;
+}
+
+.delete-account-btn {
+  background-color: red;
+  color: white;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #ffffff;
   padding: 20px;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   text-align: center;
-  margin: 20px auto;
-  max-width: 400px;
+  width: 400px;
 }
 
-.profile-box {
-  padding: 20px;
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
 }
 
-h2 {
-  font-size: 1.8rem;
-  color: #4a4a4a;
-  margin-bottom: 10px;
+.cancel-btn, .confirm-btn {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
-p {
-  font-size: 1rem;
-  color: #555;
+.cancel-btn {
+  background-color: #ccc;
 }
 
-.error {
-  color: red;
-  font-weight: bold;
+.confirm-btn {
+  background-color: red;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: #bbb;
+}
+
+.confirm-btn:hover {
+  background-color: #ff0000;
 }
