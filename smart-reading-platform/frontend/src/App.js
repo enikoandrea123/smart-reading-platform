@@ -12,6 +12,7 @@ import Terms from './components/Terms';
 import About from './components/About';
 import ForgotPassword from './components/ForgotPassword';
 import Explore from './components/Explore';
+import Profile from './components/Profile';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/forgot-password" element={<ForgotPassword/>} />
         <Route path="/explore" element={<Explore/>} />
+        <Route path="/profile" element={<Profile />} />
     </Routes>
     <Footer/>
     </Router>

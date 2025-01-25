@@ -1,0 +1,29 @@
+ .profile-container {
+  background-color: #fdfdfd;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  margin: 20px auto;
+  max-width: 400px;
+}
+
+.profile-box {
+  padding: 20px;
+}
+
+h2 {
+  font-size: 1.8rem;
+  color: #4a4a4a;
+  margin-bottom: 10px;
+}
+
+p {
+  font-size: 1rem;
+  color: #555;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+}

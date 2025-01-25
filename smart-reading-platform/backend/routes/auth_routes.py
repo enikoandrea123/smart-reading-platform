@@ -5,7 +5,7 @@ from datetime import timedelta
 from ..models.user import User
 from ..extensions import db
 
-auth_routes = Blueprint('auth', __name__)
+auth_routes = Blueprint('auth', __name__, url_prefix='/')
 
 @auth_routes.route('/signup', methods=['POST'])
 def signup():
@@ -47,7 +47,7 @@ def signin():
     if not user or not check_password_hash(user.password, password):
         return jsonify({"message": "Invalid credentials"}), 401
 
-    access_token = create_access_token(identity=user.id, expires_delta=timedelta(hours=1))
+    access_token = create_access_token(identity=user.id, expires_delta=timedelta(hours=6))
 
     return jsonify({"message": "Login successful", "token": access_token, "user": user.to_dict()}), 200
 
@@ -61,4 +61,4 @@ def profile():
     if not user:
         return jsonify({"message": "User not found"}), 404
 
-    return jsonify({"user": user.to_dict()}), 200
+    return jsonify({"user": {"name": user.name, "email": user.email}}), 200

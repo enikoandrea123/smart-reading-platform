@@ -10,7 +10,7 @@ def create_app():
     app.config.from_object('backend.config.Config')
 
     db.init_app(app)
-    CORS(app)
+    CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
     JWTManager(app)
 
     app.register_blueprint(auth_routes)
