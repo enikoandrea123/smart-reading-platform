@@ -4,6 +4,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from .extensions import db
 from .routes.auth_routes import auth_routes
+from .routes.book_routes import book_routes
 
 def create_app():
     app = Flask(__name__, static_folder='../frontend/build', static_url_path='/')
@@ -14,6 +15,7 @@ def create_app():
     JWTManager(app)
 
     app.register_blueprint(auth_routes)
+    app.register_blueprint(book_routes)
 
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')

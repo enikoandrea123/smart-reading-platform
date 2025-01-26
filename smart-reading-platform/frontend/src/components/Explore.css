@@ -1,125 +1,75 @@
-.search-page-container {
-  padding: 20px;
-  font-family: Arial, sans-serif;
-}
-
-.search-bar {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.search-bar input {
-  width: 80%;
-  padding: 10px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.search-bar button {
-  padding: 10px;
-  font-size: 1rem;
-  background-color: #37474f;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.search-bar button:hover {
-  background-color: #555;
-}
-
-.filters {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.filter {
-  display: flex;
-  flex-direction: column;
-  width: 30%;
-}
-
-.filter label {
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.filter select {
-  padding: 10px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
 .search-results {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(8, auto);
   gap: 20px;
-  margin-top: 20px;
+  justify-content: center;
+  padding: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .book-item {
   background-color: #f9f9f9;
-  padding: 15px;
+  padding: 10px;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
+  width: 100%;
+  max-width: 180px;
 }
 
 .book-cover {
-  width: 100%;
-  height: 200px;
+  width: 120px;
+  height: 180px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 5px;
 }
 
 .book-details {
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .book-details h2 {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: #333;
 }
 
 .book-details p {
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: #555;
+  margin: 5px 0;
 }
 
 .book-details p strong {
   font-weight: bold;
 }
 
-.reset-button {
-  padding: 10px 20px;
-  background-color: #37474f;
-  color: #ffffff;
-  font-size: 1rem;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+.pagination {
+  display: flex;
+  justify-content: center;
   margin-top: 20px;
-  transition: background-color 0.3s, transform 0.3s ease-in-out, box-shadow 0.3s;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.reset-button:hover {
+.pagination button {
+  padding: 8px 16px;
+  margin: 5px;
+  font-size: 1rem;
+  background-color: #37474f;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.pagination button:hover {
   background-color: #263238;
-  transform: scale(1.05);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-.reset-button:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(55, 71, 79, 0.6);
-}
-
-.reset-button:active {
-  background-color: #263238;
-  transform: scale(0.98);
+.pagination span {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0 10px;
 }
