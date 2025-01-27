@@ -1,72 +1,69 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import "./Explore.css";
 
 function ExplorePage() {
   const [books, setBooks] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [genreFilter, setGenreFilter] = useState("");
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        setLoading(true);
-        const response = await fetch(`http://127.0.0.1:5000/explore_books?page=${page}`);
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        const data = await response.json();
-        setBooks(data || []);
-        setLoading(false);
-      } catch (error) {
-        setLoading(false);
-        console.error("Error fetching books:", error);
+  const fetchBooks = async (query, page) => {
+    try {
+      setLoading(true);
+
+      const apiUrl = query
+        ? `http://127.0.0.1:5000/explore_books?query=${query}&page=${page}`
+        : `http://127.0.0.1:5000/explore_books?query=&page=${page}`;
+
+      const response = await fetch(apiUrl);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
       }
-    };
+      const data = await response.json();
+      setBooks(data || []);
+    } catch (error) {
+      console.error("Error fetching books:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchBooks();
-  }, [page]);
+  useEffect(() => {
+    fetchBooks(searchTerm, 1);
+  }, [searchTerm]);
 
-  const filteredBooks = books.filter((book) =>
-    (searchTerm === "" || book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      book.author.toLowerCase().includes(searchTerm.toLowerCase())) &&
-    (genreFilter === "" || book.genre.includes(genreFilter))
-  );
+  const handleSearch = (e) => {
+    e.preventDefault();
+    setPage(1);
+    fetchBooks(searchTerm, 1);
+  };
+
+  const handleNextPage = () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    fetchBooks(searchTerm, nextPage);
+  };
 
   return (
-    <div className="explore-page">
+    <div className="explore-container">
       <div className="search-bar">
         <input
           type="text"
-          placeholder="Search by title or author..."
+          placeholder="Search for books..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-      </div>
-
-      <div className="filters">
-        <label>Genre:</label>
-        <select value={genreFilter} onChange={(e) => setGenreFilter(e.target.value)}>
-          <option value="">All Genres</option>
-          <option value="Fiction">Fiction</option>
-          <option value="Mystery">Mystery</option>
-          <option value="Science Fiction">Science Fiction</option>
-          <option value="Romance">Romance</option>
-          <option value="Fantasy">Fantasy</option>
-          <option value="Horror">Horror</option>
-          <option value="Historical">Historical</option>
-          <option value="Thriller">Thriller</option>
-        </select>
+        <button onClick={handleSearch}>Search</button>
       </div>
 
       {loading ? (
         <p>Loading books...</p>
-      ) : (
+      ) : books.length > 0 ? (
         <div className="search-results">
-          {filteredBooks.length > 0 ? (
-            filteredBooks.map((book) => (
-              <div key={book.id} className="book-item">
+          {books.map((book) => (
+            <Link to={`/book/${book.id}`} key={book.id} className="book-link">
+              <div className="book-item">
                 <img src={book.coverImage} alt={book.title} className="book-cover" />
                 <div className="book-details">
                   <h2>{book.title}</h2>
@@ -74,22 +71,18 @@ function ExplorePage() {
                   <p><strong>Genre:</strong> {book.genre}</p>
                 </div>
               </div>
-            ))
-          ) : (
-            <p>No books found.</p>
-          )}
+            </Link>
+          ))}
         </div>
+      ) : (
+        <p>No books found.</p>
       )}
 
-      <div className="pagination">
-        <button onClick={() => setPage(page - 1)} disabled={page === 1}>
-          Previous
-        </button>
-        <span>Page {page}</span>
-        <button onClick={() => setPage(page + 1)}>
-          Next
-        </button>
-      </div>
+      {!searchTerm && (
+        <div className="pagination">
+          <button onClick={handleNextPage}>Next</button>
+        </div>
+      )}
     </div>
   );
 }

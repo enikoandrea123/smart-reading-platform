@@ -1,13 +1,46 @@
+.explore-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-bar input {
+  width: 300px;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.search-bar button {
+  padding: 10px;
+  font-size: 1rem;
+  background-color: #37474f;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.search-bar button:hover {
+  background-color: #555;
+}
+
 .search-results {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(8, auto);
   gap: 20px;
-  justify-content: center;
-  padding: 20px;
   width: 100%;
   max-width: 1200px;
-  margin: 0 auto;
+  margin-top: 20px;
 }
 
 .book-item {
@@ -17,7 +50,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   text-align: center;
   width: 100%;
-  max-width: 180px;
+  max-width: 200px;
 }
 
 .book-cover {
@@ -42,10 +75,6 @@
   margin: 5px 0;
 }
 
-.book-details p strong {
-  font-weight: bold;
-}
-
 .pagination {
   display: flex;
   justify-content: center;
@@ -53,23 +82,15 @@
 }
 
 .pagination button {
-  padding: 8px 16px;
-  margin: 5px;
+  padding: 10px 20px;
   font-size: 1rem;
   background-color: #37474f;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background 0.3s ease-in-out;
 }
 
 .pagination button:hover {
   background-color: #263238;
-}
-
-.pagination span {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin: 0 10px;
 }
