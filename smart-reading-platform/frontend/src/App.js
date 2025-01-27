@@ -13,6 +13,7 @@ import About from './components/About';
 import ForgotPassword from './components/ForgotPassword';
 import Explore from './components/Explore';
 import Profile from './components/Profile';
+import BookDetail from './components/BookDetail';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         <Route path="/forgot-password" element={<ForgotPassword/>} />
         <Route path="/explore" element={<Explore/>} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/book/:bookId" element={<BookDetail />} />
     </Routes>
     <Footer/>
     </Router>
