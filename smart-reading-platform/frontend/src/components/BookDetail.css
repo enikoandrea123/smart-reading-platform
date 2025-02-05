@@ -32,4 +32,25 @@
 .book-description {
   margin-top: 15px;
   text-align: justify;
+  line-height: 1.6;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.buy-link {
+  display: inline-block;
+  padding: 10px;
+  font-size: 1rem;
+  background-color: #37474f;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.buy-link:hover {
+  background-color: #555;
 }

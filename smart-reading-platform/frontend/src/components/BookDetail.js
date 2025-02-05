@@ -40,6 +40,11 @@ function BookDetail() {
     fetchBookDetail();
   }, [bookId]);
 
+  const cleanText = (html) => {
+    if (!html) return "";
+    return html.replace(/<\/?[^>]+(>|$)/g, "");
+  };
+
   if (loading) return <p>Loading book details...</p>;
   if (error) return <p>{error}</p>;
 
@@ -50,9 +55,15 @@ function BookDetail() {
       <img src={book?.coverImage} alt={book?.title} />
       <p><strong>Genre:</strong> {book?.genre}</p>
       <p><strong>Published:</strong> {book?.publishedDate}</p>
-      <p>{book?.description}</p>
-      <a href={book?.buyLink} target="_blank" rel="noopener noreferrer">
-        Buy / More Info
+
+      <div className="book-description">
+        {cleanText(book?.description)?.split("\n\n").map((para, index) => (
+          <p key={index}>{para}</p>
+        ))}
+      </div>
+
+        <a href={book?.buyLink} target="_blank" rel="noopener noreferrer" className="buy-link">
+            Buy
       </a>
     </div>
   );
