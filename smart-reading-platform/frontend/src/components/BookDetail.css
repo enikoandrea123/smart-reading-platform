@@ -5,6 +5,22 @@
   padding: 20px;
   max-width: 800px;
   margin: 0 auto;
+  background: #fff8e1;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .book-cover {
@@ -12,14 +28,72 @@
   height: auto;
   border-radius: 8px;
   margin-bottom: 20px;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.book-cover:hover {
+  transform: scale(1.08);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.book-actions {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.favorite-btn,
+.bookmark-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease-in-out;
+  outline: none;
+}
+
+.favorite-btn {
+  background-color: #ff7043;
+  color: white;
+}
+
+.favorite-btn.active {
+  background-color: #d84315;
+}
+
+.bookmark-btn {
+  background-color: #4db6ac;
+  color: white;
+}
+
+.bookmark-btn.active {
+  background-color: #00796b;
+}
+
+.favorite-btn:hover,
+.bookmark-btn:hover {
+  transform: scale(1.07);
 }
 
 .book-info {
   text-align: center;
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+.book-info h1 {
+  font-size: 2.2rem;
+  color: #37474f;
+  margin-bottom: 10px;
 }
 
 .book-info h2 {
   font-size: 2rem;
+  color: #ff7043;
   margin-bottom: 10px;
 }
 
@@ -35,11 +109,72 @@
   line-height: 1.6;
   font-size: 1.1rem;
   color: #333;
+  background: #ffcc80;
+  padding: 15px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
 }
 
-.buy-link {
+.book-description:hover {
+  transform: scale(1.02);
+}
+
+.book-rating {
+  font-size: 1.2rem;
+  margin: 10px 0;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease-in-out;
+}
+
+.star-rating {
+  display: flex;
+  font-size: 24px;
+  color: gold;
+  gap: 2px;
+  transition: transform 0.3s ease-in-out;
+}
+
+.star-rating:hover {
+  transform: scale(1.05);
+}
+
+.half-star {
+  position: relative;
   display: inline-block;
+  width: 12px;
+  overflow: hidden;
+}
+
+.book-reviews {
+  margin-top: 20px;
   padding: 10px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 700px;
+}
+
+.book-reviews h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.review-item {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.review-item:last-child {
+  border-bottom: none;
+}
+
+.preview-link {
+  display: inline-block;
+  padding: 12px 20px;
   font-size: 1rem;
   background-color: #37474f;
   color: white;
@@ -48,9 +183,39 @@
   cursor: pointer;
   text-align: center;
   text-decoration: none;
-  transition: background-color 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  margin-top: 20px;
 }
 
-.buy-link:hover {
+.preview-link:hover {
   background-color: #555;
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .book-detail-container {
+    padding: 15px;
+  }
+
+  .book-cover {
+    width: 200px;
+  }
+
+  .book-info h1 {
+    font-size: 1.8rem;
+  }
+
+  .book-info h2 {
+    font-size: 1.3rem;
+  }
+
+  .book-description {
+    font-size: 1rem;
+    padding: 10px;
+  }
+
+  .preview-link {
+    font-size: 0.9rem;
+    padding: 10px 15px;
+  }
 }
