@@ -14,7 +14,7 @@ import ForgotPassword from './components/ForgotPassword';
 import Explore from './components/Explore';
 import Profile from './components/Profile';
 import BookDetail from './components/BookDetail';
-import Favourites from './components/Favourites';
+import Favorites from './components/Favorites';
 
 
 function App() {
@@ -32,7 +32,7 @@ function App() {
         <Route path="/explore" element={<Explore/>} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/book/:bookId" element={<BookDetail />} />
-        <Route path="/book/:bookId" element={<Favourites />} />
+        <Route path="/favorites" element={<Favorites />} />
     </Routes>
     <Footer/>
     </Router>
