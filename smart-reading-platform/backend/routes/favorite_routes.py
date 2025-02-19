@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..extensions import db
 from ..models.favorite import FavoriteBook
-from ..models.user import User
+from ..models.reading_list import ReadingList
 
 favorite_routes = Blueprint("favorite_routes", __name__)
 
@@ -11,20 +11,16 @@ favorite_routes = Blueprint("favorite_routes", __name__)
 def add_favorite():
     user_id = get_jwt_identity()
     data = request.json
-
     book_id = data.get("id")
-    title = data.get("title")
-    author = data.get("author")
-    cover_image = data.get("coverImage")
 
-    if not book_id or not title or not author:
-        return jsonify({"error": "Missing required book details"}), 400
+    if not book_id:
+        return jsonify({"error": "Missing book ID"}), 400
 
     existing_favorite = FavoriteBook.query.filter_by(user_id=user_id, book_id=book_id).first()
     if existing_favorite:
         return jsonify({"message": "Book is already in favorites"}), 409
 
-    favorite = FavoriteBook(user_id=user_id, book_id=book_id, title=title, author=author, cover_image=cover_image)
+    favorite = FavoriteBook(user_id=user_id, book_id=book_id)
     db.session.add(favorite)
     db.session.commit()
 
@@ -36,15 +32,7 @@ def get_favorites():
     user_id = get_jwt_identity()
     favorites = FavoriteBook.query.filter_by(user_id=user_id).all()
 
-    favorite_books = [
-        {
-            "id": fav.book_id,
-            "title": fav.title,
-            "author": fav.author,
-            "coverImage": fav.cover_image
-        }
-        for fav in favorites
-    ]
+    favorite_books = [fav.book_id for fav in favorites]
 
     return jsonify(favorite_books), 200
 
