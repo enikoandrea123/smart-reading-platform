@@ -1,6 +1,6 @@
 from flask import request, jsonify, Blueprint
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, create_refresh_token
 from datetime import timedelta
 from ..models.user import User
 from ..extensions import db
@@ -27,11 +27,19 @@ def signup():
     try:
         db.session.add(new_user)
         db.session.commit()
-        return jsonify({"message": "User registered successfully"}), 201
+
+        access_token = create_access_token(identity=new_user.id, expires_delta=timedelta(hours=6))
+        refresh_token = create_refresh_token(identity=new_user.id)
+
+        return jsonify({
+            "message": "User registered successfully",
+            "token": access_token,
+            "refresh_token": refresh_token,
+            "user": new_user.to_dict()
+        }), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": "Error registering user", "error": str(e)}), 500
-
 
 @auth_routes.route('/signin', methods=['POST'])
 def signin():
@@ -48,8 +56,14 @@ def signin():
         return jsonify({"message": "Invalid credentials"}), 401
 
     access_token = create_access_token(identity=user.id, expires_delta=timedelta(hours=6))
+    refresh_token = create_refresh_token(identity=user.id)
 
-    return jsonify({"message": "Login successful", "token": access_token, "user": user.to_dict()}), 200
+    return jsonify({
+        "message": "Login successful",
+        "token": access_token,
+        "refresh_token": refresh_token,
+        "user": user.to_dict()
+    }), 200
 
 
 @auth_routes.route('/profile', methods=['GET'])
@@ -111,3 +125,10 @@ def delete_account():
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": "Error deleting account", "error": str(e)}), 500
+
+@auth_routes.route('/refresh', methods=['POST'])
+@jwt_required(refresh=True)
+def refresh():
+    user_id = get_jwt_identity()
+    new_access_token = create_access_token(identity=user_id, expires_delta=timedelta(hours=6))
+    return jsonify({"token": new_access_token}), 200
