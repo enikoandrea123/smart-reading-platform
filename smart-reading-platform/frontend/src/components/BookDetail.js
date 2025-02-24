@@ -83,15 +83,18 @@ function BookDetail() {
     );
   };
 
-  const handleAddToReadingList = async () => {
+const handleAddToReadingList = async () => {
   const token = localStorage.getItem("token");
   if (!token) {
     alert("You need to be signed in to add books to your reading list.");
+    console.error("Token not found in localStorage.");
     return;
   }
 
+  console.log("Sending request to add book to reading list:", bookId);
+
   try {
-    const response = await fetch("http://localhost:5000/reading-list", {
+    const response = await fetch("http://localhost:3000/reading-list", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -101,20 +104,21 @@ function BookDetail() {
       body: JSON.stringify({ book_id: bookId, status: "not started" }),
     });
 
+    console.log("Response status:", response.status);
+
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error("Error response from server:", errorText);
       throw new Error("Failed to add to reading list");
     }
 
     const data = await response.json();
-
     console.log("Successfully added to reading list:", data);
-
     alert("Book added to your reading list!");
-
 
   } catch (error) {
     console.error("Error adding to reading list:", error);
-    alert("There was an error adding the book to your reading list. Please try again.");
+    alert("Error adding book to reading list");
   }
 };
 
@@ -132,11 +136,14 @@ function BookDetail() {
         </button>
 
         <button
-          className={`bookmark-btn ${isInReadingList ? "active" : ""}`}
-          onClick={() => setIsInReadingList(!isInReadingList)}
-        >
-          📖 {isInReadingList ? "Remove from Reading List" : "Add to Reading List"}
-        </button>
+  className={`bookmark-btn ${isInReadingList ? "active" : ""}`}
+  onClick={() => {
+    setIsInReadingList(!isInReadingList);
+    handleAddToReadingList();
+  }}
+>
+  📖 {isInReadingList ? "Remove from Reading List" : "Add to Reading List"}
+</button>
       </div>
 
       <h1>{book?.title}</h1>
