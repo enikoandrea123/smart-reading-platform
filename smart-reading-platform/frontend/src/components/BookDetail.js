@@ -9,6 +9,7 @@ function BookDetail() {
   const [error, setError] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isInReadingList, setIsInReadingList] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   useEffect(() => {
     if (!bookId) {
@@ -60,7 +61,33 @@ function BookDetail() {
       }
     };
 
+    const checkIfBookInReadingList = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const response = await fetch("http://localhost:3000/reading-list", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const isBookInList = data.some((item) => item.book_id === bookId);
+
+          setIsInReadingList(isBookInList);
+          setIsButtonDisabled(isBookInList);
+        }
+      } catch (error) {
+        console.error("Error checking reading list:", error);
+      }
+    };
+
     fetchBookDetail();
+    checkIfBookInReadingList();
   }, [bookId]);
 
   const cleanText = (html) => {
@@ -83,44 +110,79 @@ function BookDetail() {
     );
   };
 
-const handleAddToReadingList = async () => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    alert("You need to be signed in to add books to your reading list.");
-    console.error("Token not found in localStorage.");
-    return;
-  }
-
-  console.log("Sending request to add book to reading list:", bookId);
-
-  try {
-    const response = await fetch("http://localhost:3000/reading-list", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      credentials: "include",
-      body: JSON.stringify({ book_id: bookId, status: "not started" }),
-    });
-
-    console.log("Response status:", response.status);
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error("Error response from server:", errorText);
-      throw new Error("Failed to add to reading list");
+  const handleAddToReadingList = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You need to be signed in to add books to your reading list.");
+      console.error("Token not found in localStorage.");
+      return;
     }
 
-    const data = await response.json();
-    console.log("Successfully added to reading list:", data);
-    alert("Book added to your reading list!");
+    console.log("Sending request to add book to reading list:", bookId);
 
-  } catch (error) {
-    console.error("Error adding to reading list:", error);
-    alert("Error adding book to reading list");
-  }
-};
+    try {
+      const response = await fetch("http://localhost:3000/reading-list", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+        body: JSON.stringify({ book_id: bookId, status: "not started" }),
+      });
+
+      console.log("Response status:", response.status);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Error response from server:", errorText);
+        throw new Error("Failed to add to reading list");
+      }
+
+      const data = await response.json();
+      console.log("Successfully added to reading list:", data);
+
+      setIsInReadingList(true);
+      setIsButtonDisabled(true);
+      alert("Book added to your reading list!");
+
+    } catch (error) {
+      console.error("Error adding to reading list:", error);
+      alert("Error adding book to reading list");
+    }
+  };
+
+  const handleRemoveFromReadingList = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You need to be signed in to remove books from your reading list.");
+      console.error("Token not found in localStorage.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:3000/reading-list/${bookId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Error response from server:", errorText);
+        throw new Error("Failed to remove from reading list");
+      }
+
+      setIsInReadingList(false);
+      setIsButtonDisabled(false);
+      alert("Book removed from your reading list!");
+    } catch (error) {
+      console.error("Error removing from reading list:", error);
+      alert("Error removing book from reading list");
+    }
+  };
 
   if (loading) return <p>Loading book details...</p>;
   if (error) return <p>{error}</p>;
@@ -136,14 +198,18 @@ const handleAddToReadingList = async () => {
         </button>
 
         <button
-  className={`bookmark-btn ${isInReadingList ? "active" : ""}`}
-  onClick={() => {
-    setIsInReadingList(!isInReadingList);
-    handleAddToReadingList();
-  }}
->
-  📖 {isInReadingList ? "Remove from Reading List" : "Add to Reading List"}
-</button>
+          className={`bookmark-btn ${isInReadingList ? "active" : ""}`}
+          onClick={() => {
+            if (isInReadingList) {
+              handleRemoveFromReadingList();
+            } else {
+              handleAddToReadingList();
+            }
+          }}
+          disabled={isButtonDisabled}
+        >
+          📖 {isInReadingList ? "Book added to the list" : "Add to Reading List"}
+        </button>
       </div>
 
       <h1>{book?.title}</h1>
