@@ -1,3 +1,5 @@
+import sys
+
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..extensions import db
@@ -11,20 +13,14 @@ favorite_routes = Blueprint("favorite_routes", __name__)
 def add_favorite():
     user_id = get_jwt_identity()
     data = request.json
-    book_id = data.get("id")
+    book_id = data.get("book_id")
+
+    print(f"User ID: {user_id}, Book ID: {book_id}", file=sys.stderr)
 
     if not book_id:
         return jsonify({"error": "Missing book ID"}), 400
 
-    existing_favorite = FavoriteBook.query.filter_by(user_id=user_id, book_id=book_id).first()
-    if existing_favorite:
-        return jsonify({"message": "Book is already in favorites"}), 409
-
-    favorite = FavoriteBook(user_id=user_id, book_id=book_id)
-    db.session.add(favorite)
-    db.session.commit()
-
-    return jsonify({"message": "Book added to favorites"}), 201
+    return jsonify({"message": "Debugging request"}), 200
 
 @favorite_routes.route("/favorites", methods=["GET"])
 @jwt_required()
