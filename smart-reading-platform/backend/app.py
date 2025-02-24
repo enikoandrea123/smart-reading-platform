@@ -17,6 +17,8 @@ def create_app():
 
     db.init_app(app)
     migrate.init_app(app, db)
+
+    app.config['CORS_HEADERS'] = 'Content-Type'
     CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
     JWTManager(app)
 
@@ -24,6 +26,13 @@ def create_app():
     app.register_blueprint(book_routes)
     app.register_blueprint(favorite_routes)
     app.register_blueprint(reading_list_routes)
+
+    @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+        response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        response.headers.add('Access-Control-Allow-Credentials', 'true')
+        return response
 
     @app.route('/', defaults={'path': ''})
     @app.route('/<path:path>')

@@ -83,6 +83,41 @@ function BookDetail() {
     );
   };
 
+  const handleAddToReadingList = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    alert("You need to be signed in to add books to your reading list.");
+    return;
+  }
+
+  try {
+    const response = await fetch("http://localhost:5000/reading-list", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      credentials: "include",
+      body: JSON.stringify({ book_id: bookId, status: "not started" }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to add to reading list");
+    }
+
+    const data = await response.json();
+
+    console.log("Successfully added to reading list:", data);
+
+    alert("Book added to your reading list!");
+
+
+  } catch (error) {
+    console.error("Error adding to reading list:", error);
+    alert("There was an error adding the book to your reading list. Please try again.");
+  }
+};
+
   if (loading) return <p>Loading book details...</p>;
   if (error) return <p>{error}</p>;
 
