@@ -10,7 +10,13 @@ function Favorites() {
     const fetchFavorites = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch("/api/favorites", {
+        if (!token) {
+          setError("You need to be signed in to view favorites.");
+          setLoading(false);
+          return;
+        }
+
+        const response = await fetch("http://localhost:5000/favorites", {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -22,17 +28,18 @@ function Favorites() {
           throw new Error(`Error: ${response.status}`);
         }
 
-        const favoriteBookIds = await response.json();
+        const data = await response.json();
+        const favoriteBookIds = data.favorites;
 
         const bookDetailsPromises = favoriteBookIds.map(async (book) => {
-          const googleBooksUrl = `https://www.googleapis.com/books/v1/volumes/${book.id}`;
+          const googleBooksUrl = `https://www.googleapis.com/books/v1/volumes/${book.book_id}`;
           const googleResponse = await fetch(googleBooksUrl);
           if (!googleResponse.ok) {
             throw new Error("Failed to fetch book details");
           }
           const bookData = await googleResponse.json();
           return {
-            id: book.id,
+            book_id: book.book_id,
             title: bookData.volumeInfo.title,
             author: bookData.volumeInfo.authors?.join(", ") || "Unknown",
             coverImage: bookData.volumeInfo.imageLinks?.thumbnail || "",
@@ -51,27 +58,6 @@ function Favorites() {
     fetchFavorites();
   }, []);
 
-  const removeFavorite = async (bookId) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch(`/api/favorites/${bookId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to remove favorite");
-      }
-
-      setFavorites(favorites.filter((book) => book.id !== bookId));
-    } catch (error) {
-      console.error("Error removing favorite:", error);
-    }
-  };
-
   if (loading) return <p>Loading favorites...</p>;
   if (error) return <p>Error: {error}</p>;
 
@@ -83,11 +69,10 @@ function Favorites() {
       ) : (
         <div className="favorites-grid">
           {favorites.map((book) => (
-            <div key={book.id} className="favorite-book">
+            <div key={book.book_id} className="favorite-book">
               <img src={book.coverImage} alt={book.title} className="book-cover" />
               <h3>{book.title}</h3>
               <p>by {book.author}</p>
-              <button onClick={() => removeFavorite(book.id)}>Remove</button>
             </div>
           ))}
         </div>
