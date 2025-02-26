@@ -2,9 +2,12 @@ import React, { useState, useEffect } from "react";
 import "./Track.css";
 import { FaTrash } from "react-icons/fa";
 
+const BOOKS_PER_PAGE = 30;
+
 function Track() {
   const [readingList, setReadingList] = useState([]);
   const [statusFilter, setStatusFilter] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -115,6 +118,11 @@ function Track() {
   const filteredBooks =
     statusFilter === "All" ? readingList : readingList.filter((book) => book.status === statusFilter);
 
+  const startIndex = (currentPage - 1) * BOOKS_PER_PAGE;
+  const paginatedBooks = filteredBooks.slice(startIndex, startIndex + BOOKS_PER_PAGE);
+
+  const totalPages = Math.ceil(filteredBooks.length / BOOKS_PER_PAGE);
+
   if (loading) return <p>Loading reading list...</p>;
   if (error) return <p>{error}</p>;
 
@@ -136,11 +144,11 @@ function Track() {
         </select>
       </div>
 
-      {filteredBooks.length === 0 ? (
+      {paginatedBooks.length === 0 ? (
         <p className="empty-message">Your reading list is empty.</p>
       ) : (
         <ul className="reading-list">
-          {filteredBooks.map((book) => (
+          {paginatedBooks.map((book) => (
             <li key={book.bookId} className="reading-item">
               <img src={book.cover} alt={book.title} className="book-cover" />
               <div className="book-details">
@@ -163,6 +171,26 @@ function Track() {
           ))}
         </ul>
       )}
+
+      <div className="pagination">
+        <button
+          className="pagination-btn"
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => prev - 1)}
+        >
+          Previous
+        </button>
+        <span>
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          className="pagination-btn"
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 }

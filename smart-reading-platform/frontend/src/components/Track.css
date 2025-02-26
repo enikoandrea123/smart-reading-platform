@@ -40,6 +40,12 @@
   padding: 10px;
   border-bottom: 1px solid #ddd;
   animation: fadeIn 0.5s ease-in-out;
+  transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reading-item:hover {
+  background: #ffecb3;
+  transform: scale(1.02);
 }
 
 .book-cover {
@@ -80,4 +86,26 @@
 
 .remove-btn:hover {
   color: #b71c1c;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+}
+
+.pagination-btn {
+  background: #ff8f00;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.pagination-btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
 }
