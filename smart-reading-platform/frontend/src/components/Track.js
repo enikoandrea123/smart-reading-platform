@@ -115,8 +115,10 @@ function Track() {
     }
   };
 
-  const filteredBooks =
-    statusFilter === "All" ? readingList : readingList.filter((book) => book.status === statusFilter);
+const filteredBooks =
+  statusFilter === "All"
+    ? readingList
+    : readingList.filter((book) => book.status.toLowerCase() === statusFilter.toLowerCase());
 
   const startIndex = (currentPage - 1) * BOOKS_PER_PAGE;
   const paginatedBooks = filteredBooks.slice(startIndex, startIndex + BOOKS_PER_PAGE);

@@ -13,7 +13,7 @@ def add_to_reading_list():
     user_id = get_jwt_identity()
     data = request.json
     book_id = data.get("book_id")
-    status = data.get("status", "to_read")
+    status = data.get("status", "not started")
 
     logging.debug(f"User {user_id} is adding book {book_id} with status {status}")
 
