@@ -1,0 +1,83 @@
+.track-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #fff8e1;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.track-title {
+  text-align: center;
+  font-size: 2rem;
+  color: #37474f;
+  margin-bottom: 15px;
+}
+
+.filter-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.filter-container label {
+  font-size: 1.1rem;
+  margin-right: 10px;
+}
+
+.filter-container select {
+  font-size: 1rem;
+  padding: 5px;
+}
+
+.reading-list {
+  list-style: none;
+  padding: 0;
+}
+
+.reading-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.book-cover {
+  width: 80px;
+  height: auto;
+  border-radius: 5px;
+  margin-right: 15px;
+}
+
+.book-details {
+  flex-grow: 1;
+}
+
+.book-title {
+  font-size: 1.2rem;
+  color: #37474f;
+}
+
+.book-author {
+  font-size: 1rem;
+  color: #555;
+}
+
+.status-dropdown {
+  margin-left: auto;
+  padding: 5px;
+  font-size: 1rem;
+}
+
+.remove-btn {
+  background: none;
+  border: none;
+  color: #d84315;
+  font-size: 1.2rem;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.remove-btn:hover {
+  color: #b71c1c;
+}

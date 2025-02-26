@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from "react";
+import "./Track.css";
+import { FaTrash } from "react-icons/fa";
 
 function Track() {
   const [readingList, setReadingList] = useState([]);
+  const [statusFilter, setStatusFilter] = useState("All");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchReadingList = async () => {
-      console.log("Fetching reading list...");
-
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-          console.error("No auth token found.");
           setError("You must be logged in to view your reading list.");
           setLoading(false);
           return;
@@ -26,19 +26,16 @@ function Track() {
           },
         });
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
 
         const data = await response.json();
-        console.log("Reading list fetched:", data);
 
         const bookDetails = await Promise.all(
           data.map(async (book) => {
-            const bookResponse = await fetch(`https://www.googleapis.com/books/v1/volumes/${book.book_id}`);
-            if (!bookResponse.ok) {
-              throw new Error(`Failed to fetch details for book ID: ${book.book_id}`);
-            }
+            const bookResponse = await fetch(
+              `https://www.googleapis.com/books/v1/volumes/${book.book_id}`
+            );
+            if (!bookResponse.ok) throw new Error(`Failed to fetch book ID: ${book.book_id}`);
             const bookData = await bookResponse.json();
             const volumeInfo = bookData.volumeInfo || {};
             return {
@@ -53,7 +50,6 @@ function Track() {
 
         setReadingList(bookDetails);
       } catch (error) {
-        console.error("Error fetching reading list:", error);
         setError(error.message);
       } finally {
         setLoading(false);
@@ -79,14 +75,10 @@ function Track() {
         },
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to remove book with ID: ${bookId}`);
-      }
+      if (!response.ok) throw new Error(`Failed to remove book with ID: ${bookId}`);
 
       setReadingList(readingList.filter((book) => book.bookId !== bookId));
-      alert("Book removed from your reading list.");
     } catch (error) {
-      console.error("Error removing book:", error);
       alert("There was an error removing the book. Please try again.");
     }
   };
@@ -108,50 +100,65 @@ function Track() {
         body: JSON.stringify({ status: newStatus }),
       });
 
-      if (!response.ok) {
-        throw new Error(`Failed to update status for book with ID: ${bookId}`);
-      }
+      if (!response.ok) throw new Error(`Failed to update status for book ID: ${bookId}`);
 
       setReadingList(
         readingList.map((book) =>
           book.bookId === bookId ? { ...book, status: newStatus } : book
         )
       );
-      alert("Book status updated.");
     } catch (error) {
-      console.error("Error changing status:", error);
       alert("There was an error updating the book status. Please try again.");
     }
   };
+
+  const filteredBooks =
+    statusFilter === "All" ? readingList : readingList.filter((book) => book.status === statusFilter);
 
   if (loading) return <p>Loading reading list...</p>;
   if (error) return <p>{error}</p>;
 
   return (
-    <div>
-      <h1>My Reading List</h1>
-      {readingList.length === 0 ? (
-        <p>Your reading list is empty.</p>
+    <div className="track-container">
+      <h1 className="track-title">My Reading List</h1>
+
+      <div className="filter-container">
+        <label htmlFor="status-filter">Filter by status:</label>
+        <select
+          id="status-filter"
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+        >
+          <option value="All">All</option>
+          <option value="Not Started">Not Started</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
+        </select>
+      </div>
+
+      {filteredBooks.length === 0 ? (
+        <p className="empty-message">Your reading list is empty.</p>
       ) : (
-        <ul>
-          {readingList.map((book) => (
-            <li key={book.book_id}>
-              <img src={book.cover} alt={book.title} style={{ width: "100px" }} />
-              <h3>{book.title}</h3>
-              <p>{book.author}</p>
-
-              <div>
-                <select
-                  value={book.status}
-                  onChange={(e) => handleChangeStatus(book.bookId, e.target.value)}
-                >
-                  <option value="Not Started">Not Started</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Completed">Completed</option>
-                </select>
+        <ul className="reading-list">
+          {filteredBooks.map((book) => (
+            <li key={book.bookId} className="reading-item">
+              <img src={book.cover} alt={book.title} className="book-cover" />
+              <div className="book-details">
+                <h3 className="book-title">{book.title}</h3>
+                <p className="book-author">{book.author}</p>
               </div>
-
-              <button onClick={() => handleRemoveBook(book.bookId)}>Remove</button>
+              <select
+                className="status-dropdown"
+                value={book.status}
+                onChange={(e) => handleChangeStatus(book.bookId, e.target.value)}
+              >
+                <option value="Not Started">Not Started</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+              </select>
+              <button className="remove-btn" onClick={() => handleRemoveBook(book.bookId)}>
+                <FaTrash />
+              </button>
             </li>
           ))}
         </ul>
