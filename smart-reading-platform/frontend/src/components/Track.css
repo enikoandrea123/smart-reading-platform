@@ -114,3 +114,33 @@
   margin-left: 15px;
   font-weight: bold;
 }
+
+.top-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.card {
+  flex: 1;
+  padding: 20px;
+  margin: 0 10px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.diagram {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 200px;
+  margin: 20px auto;
+}
+
+.diagram h2 {
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  color: #37474f;
+}

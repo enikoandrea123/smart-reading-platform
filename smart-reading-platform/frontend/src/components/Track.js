@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "./Track.css";
 import { FaTrash } from "react-icons/fa";
+import { Doughnut } from "react-chartjs-2";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 const BOOKS_PER_PAGE = 30;
 
@@ -125,12 +129,56 @@ function Track() {
 
   const totalPages = Math.ceil(filteredBooks.length / BOOKS_PER_PAGE);
 
+  const notStartedCount = filteredBooks.filter((book) => book.status === "Not Started").length;
+  const inProgressCount = filteredBooks.filter((book) => book.status === "In Progress").length;
+  const completedCount = filteredBooks.filter((book) => book.status === "Completed").length;
+
+  const totalBooks = filteredBooks.length;
+
+  const diagramData = {
+    labels: ['Not Started', 'In Progress', 'Completed'],
+    datasets: [
+      {
+        data: [notStartedCount, inProgressCount, completedCount],
+        backgroundColor: ['#ffcc80', '#66b3ff', '#99ff99'],
+        borderColor: '#fff',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const diagramOptions = {
+    plugins: {
+      tooltip: {
+        callbacks: {
+          label: (tooltipItem) => {
+            const percentage = (tooltipItem.raw / totalBooks) * 100;
+            return `${tooltipItem.label}: ${percentage.toFixed(2)}%`;
+          },
+        },
+      },
+    },
+  };
+
   if (loading) return <p>Loading reading list...</p>;
   if (error) return <p>{error}</p>;
 
   return (
     <div className="track-container">
       <h1 className="track-title">My Reading List</h1>
+
+      <div className="top-container">
+        <div className="card">
+        </div>
+        <div className="card">
+        </div>
+        <div className="card">
+          <div className="diagram">
+            <h2>Reading Status</h2>
+            <Doughnut data={diagramData} options={diagramOptions} />
+          </div>
+        </div>
+      </div>
 
       <div className="filter-container">
         <label htmlFor="status-filter">Filter by status:</label>
