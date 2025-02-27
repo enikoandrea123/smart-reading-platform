@@ -160,6 +160,10 @@ function Track() {
     },
   };
 
+  const lastInProgressBook = readingList
+    .filter((book) => book.status === "In Progress")
+    .slice(-1)[0];
+
   if (loading) return <p>Loading reading list...</p>;
   if (error) return <p>{error}</p>;
 
@@ -169,15 +173,33 @@ function Track() {
 
       <div className="top-container">
         <div className="card">
-        </div>
-        <div className="card">
-        </div>
-        <div className="card">
           <div className="diagram">
             <h2>Reading Status</h2>
             <Doughnut data={diagramData} options={diagramOptions} />
           </div>
         </div>
+
+        {lastInProgressBook && (
+          <div className="card">
+            <h2 className="currently-reading-title">
+              Currently Reading
+              <span className="info-icon" title="Your last book with reading status from your list is automatically added">
+                &#9432;
+              </span>
+            </h2>
+            <div className="currently-reading-details">
+              <img
+                src={lastInProgressBook.cover}
+                alt={lastInProgressBook.title}
+                className="currently-reading-cover"
+              />
+              <div className="currently-reading-text">
+                <h3>{lastInProgressBook.title}</h3>
+                <p>{lastInProgressBook.author}</p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       <div className="filter-container">

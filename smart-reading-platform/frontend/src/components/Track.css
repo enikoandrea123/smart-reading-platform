@@ -144,3 +144,39 @@
   font-size: 1.5rem;
   color: #37474f;
 }
+
+.currently-reading-title {
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.info-icon {
+  font-size: 14px;
+  color: #777;
+  margin-left: 8px;
+}
+
+.currently-reading-details {
+  display: flex;
+  align-items: center;
+}
+
+.currently-reading-cover {
+  width: 100px;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 20px;
+}
+
+.currently-reading-text h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.currently-reading-text p {
+  margin: 5px 0;
+  font-size: 16px;
+  color: #777;
+}
