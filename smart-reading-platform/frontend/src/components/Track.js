@@ -115,10 +115,10 @@ function Track() {
     }
   };
 
-const filteredBooks =
-  statusFilter === "All"
-    ? readingList
-    : readingList.filter((book) => book.status.toLowerCase() === statusFilter.toLowerCase());
+  const filteredBooks =
+    statusFilter === "All"
+      ? readingList
+      : readingList.filter((book) => book.status.toLowerCase() === statusFilter.toLowerCase());
 
   const startIndex = (currentPage - 1) * BOOKS_PER_PAGE;
   const paginatedBooks = filteredBooks.slice(startIndex, startIndex + BOOKS_PER_PAGE);
@@ -137,13 +137,19 @@ const filteredBooks =
         <select
           id="status-filter"
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
+          onChange={(e) => {
+            setStatusFilter(e.target.value);
+            setCurrentPage(1);
+          }}
         >
           <option value="All">All</option>
           <option value="Not Started">Not Started</option>
           <option value="In Progress">In Progress</option>
           <option value="Completed">Completed</option>
         </select>
+        <span className="book-count">
+          {Math.min(currentPage * BOOKS_PER_PAGE, filteredBooks.length)} out of {filteredBooks.length}
+        </span>
       </div>
 
       {paginatedBooks.length === 0 ? (

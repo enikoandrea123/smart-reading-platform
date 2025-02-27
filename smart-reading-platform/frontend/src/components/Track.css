@@ -109,3 +109,8 @@
   background: #ccc;
   cursor: not-allowed;
 }
+
+.book-count {
+  margin-left: 15px;
+  font-weight: bold;
+}
