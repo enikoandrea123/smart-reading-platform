@@ -1,11 +1,32 @@
-import logging
+from ..extensions import db
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from ..extensions import db
 from ..models.reading_list import ReadingList
+from ..models.user import User
+import logging
 
 logging.basicConfig(level=logging.DEBUG)
 reading_list_routes = Blueprint("reading_list_routes", __name__)
+
+@reading_list_routes.route("/user/goal", methods=["GET", "PUT"])
+@jwt_required()
+def manage_goal():
+    user_id = get_jwt_identity()
+    user = User.query.filter_by(id=user_id).first()
+
+    if request.method == "GET":
+        return jsonify({"goal": user.reading_goal})
+
+    if request.method == "PUT":
+        data = request.json
+        new_goal = data.get("goal")
+
+        if not new_goal or new_goal < 0:
+            return jsonify({"error": "Invalid goal"}), 400
+
+        user.reading_goal = new_goal
+        db.session.commit()
+        return jsonify({"message": "Reading goal updated", "goal": user.reading_goal})
 
 @reading_list_routes.route("/reading-list", methods=["POST"])
 @jwt_required()

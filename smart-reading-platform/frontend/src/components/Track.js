@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Track.css";
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
@@ -14,9 +14,12 @@ function Track() {
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [goal, setGoal] = useState(0);
+  const [editingGoal, setEditingGoal] = useState(false);
+  const [newGoal, setNewGoal] = useState(0);
 
   useEffect(() => {
-    const fetchReadingList = async () => {
+    const fetchReadingListAndGoal = async () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -56,6 +59,19 @@ function Track() {
         );
 
         setReadingList(bookDetails);
+
+        const goalResponse = await fetch("http://localhost:5000/user/goal", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!goalResponse.ok) throw new Error("Failed to fetch reading goal");
+
+        const goalData = await goalResponse.json();
+        setGoal(goalData.goal);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -63,7 +79,7 @@ function Track() {
       }
     };
 
-    fetchReadingList();
+    fetchReadingListAndGoal();
   }, []);
 
   const handleRemoveBook = async (bookId) => {
@@ -116,6 +132,32 @@ function Track() {
       );
     } catch (error) {
       alert("There was an error updating the book status. Please try again.");
+    }
+  };
+
+  const handleGoalChange = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("You must be logged in to update the goal.");
+        return;
+      }
+
+      const response = await fetch("http://localhost:5000/user/goal", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ goal: newGoal }),
+      });
+
+      if (!response.ok) throw new Error("Failed to update the reading goal");
+
+      setGoal(newGoal);
+      setEditingGoal(false);
+    } catch (error) {
+      alert("There was an error updating the goal. Please try again.");
     }
   };
 
@@ -200,6 +242,35 @@ function Track() {
             </div>
           </div>
         )}
+
+        <div className="goal-container card">
+          {goal === 0 ? (
+            <p>You have not set a reading goal. Please set a goal to track your progress.</p>
+          ) : (
+            <p>You have set a goal of {goal} books. Keep going!</p>
+          )}
+
+          {completedCount >= goal && goal > 0 ? (
+            <p>Congratulations! You've reached your reading goal! Set a new goal.</p>
+          ) : (
+            <div className="goal-edit">
+             {editingGoal ? (
+  <div>
+    <input
+      type="number"
+      value={newGoal}
+      onChange={(e) => setNewGoal(Math.max(0, e.target.value))}
+      min="0"
+    />
+    <button onClick={handleGoalChange}>Save Goal</button>
+    <button onClick={() => setEditingGoal(false)}>Cancel</button>
+  </div>
+) : (
+  <FaPencilAlt onClick={() => setEditingGoal(true)} className="edit-goal-icon" />
+)}
+            </div>
+          )}
+        </div>
       </div>
 
       <div className="filter-container">

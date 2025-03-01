@@ -180,3 +180,32 @@
   font-size: 16px;
   color: #777;
 }
+
+.goal-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.goal-edit {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.goal-edit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.edit-goal-icon {
+  cursor: pointer;
+  font-size: 24px;
+  color: #333;
+}
+
+.edit-goal-icon:hover {
+  color: #007bff;
+}
