@@ -86,8 +86,33 @@ function BookDetail() {
       }
     };
 
+    const checkIfBookInFavorites = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const response = await fetch("http://localhost:3000/favorites", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const isBookFavorite = data.some((item) => item.book_id === bookId);
+
+          setIsFavorite(isBookFavorite);
+        }
+      } catch (error) {
+        console.error("Error checking favorites:", error);
+      }
+    };
+
     fetchBookDetail();
     checkIfBookInReadingList();
+    checkIfBookInFavorites();
   }, [bookId]);
 
   const cleanText = (html) => {
@@ -184,6 +209,74 @@ function BookDetail() {
     }
   };
 
+  const handleAddToFavorites = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You need to be signed in to add books to your favorites.");
+      console.error("Token not found in localStorage.");
+      return;
+    }
+
+    console.log("Sending request to add book to favorites:", bookId);
+
+    try {
+      const response = await fetch("http://localhost:3000/favorites", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        credentials: "include",
+        body: JSON.stringify({ book_id: bookId }),
+      });
+
+      console.log("Response status:", response.status);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Error response from server:", errorText);
+        throw new Error("Failed to add to favorites");
+      }
+
+      setIsFavorite(true);
+      alert("Book added to your favorites!");
+    } catch (error) {
+      console.error("Error adding to favorites:", error);
+      alert("Error adding book to favorites");
+    }
+  };
+
+  const handleRemoveFromFavorites = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("You need to be signed in to remove books from your favorites.");
+      console.error("Token not found in localStorage.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:3000/favorites/${bookId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("Error response from server:", errorText);
+        throw new Error("Failed to remove from favorites");
+      }
+
+      setIsFavorite(false);
+      alert("Book removed from your favorites!");
+    } catch (error) {
+      console.error("Error removing from favorites:", error);
+      alert("Error removing book from favorites");
+    }
+  };
+
   if (loading) return <p>Loading book details...</p>;
   if (error) return <p>{error}</p>;
 
@@ -192,7 +285,13 @@ function BookDetail() {
       <div className="book-actions">
         <button
           className={`favorite-btn ${isFavorite ? "active" : ""}`}
-          onClick={() => setIsFavorite(!isFavorite)}
+          onClick={() => {
+            if (isFavorite) {
+              handleRemoveFromFavorites();
+            } else {
+              handleAddToFavorites();
+            }
+          }}
         >
           ❤️ {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
         </button>

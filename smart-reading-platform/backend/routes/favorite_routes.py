@@ -1,10 +1,8 @@
 import sys
-
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..extensions import db
 from ..models.favorite import FavoriteBook
-from ..models.reading_list import ReadingList
 
 favorite_routes = Blueprint("favorite_routes", __name__)
 
@@ -20,7 +18,19 @@ def add_favorite():
     if not book_id:
         return jsonify({"error": "Missing book ID"}), 400
 
-    return jsonify({"message": "Debugging request"}), 200
+    existing_favorite = FavoriteBook.query.filter_by(user_id=user_id, book_id=book_id).first()
+    if existing_favorite:
+        return jsonify({"message": "Book is already in favorites"}), 409
+
+    try:
+        favorite = FavoriteBook(user_id=user_id, book_id=book_id)
+        db.session.add(favorite)
+        db.session.commit()
+        return jsonify({"message": "Book added to favorites"}), 201
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error: {str(e)}", file=sys.stderr)
+        return jsonify({"error": "Failed to add to favorites"}), 500
 
 @favorite_routes.route("/favorites", methods=["GET"])
 @jwt_required()
@@ -28,7 +38,7 @@ def get_favorites():
     user_id = get_jwt_identity()
     favorites = FavoriteBook.query.filter_by(user_id=user_id).all()
 
-    favorite_books = [fav.book_id for fav in favorites]
+    favorite_books = [{"book_id": fav.book_id} for fav in favorites]
 
     return jsonify(favorite_books), 200
 
@@ -41,7 +51,11 @@ def remove_favorite(book_id):
     if not favorite:
         return jsonify({"message": "Book not found in favorites"}), 404
 
-    db.session.delete(favorite)
-    db.session.commit()
-
-    return jsonify({"message": "Book removed from favorites"}), 200
+    try:
+        db.session.delete(favorite)
+        db.session.commit()
+        return jsonify({"message": "Book removed from favorites"}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error: {str(e)}", file=sys.stderr)
+        return jsonify({"error": "Failed to remove from favorites"}), 500
