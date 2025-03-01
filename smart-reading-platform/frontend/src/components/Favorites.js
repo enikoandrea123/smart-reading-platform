@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Favorites.css";
-import { FaTrash } from "react-icons/fa";
+import { FaTrash, FaHeart } from "react-icons/fa";
 
 const BOOKS_PER_PAGE = 30;
 
@@ -45,6 +45,7 @@ function Favorites() {
               title: volumeInfo.title || "Unknown Title",
               author: volumeInfo.authors?.join(", ") || "Unknown Author",
               cover: volumeInfo.imageLinks?.thumbnail || "",
+              rating: book.rating || 0,
             };
           })
         );
@@ -84,6 +85,37 @@ function Favorites() {
     }
   };
 
+  const handleHeartClick = async (bookId, index) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("You must be logged in to update the rating.");
+        return;
+      }
+
+      const currentRating = favoriteBooks.find(book => book.bookId === bookId).rating;
+
+      const newRating = currentRating === index + 1 ? 0 : index + 1;
+
+      const response = await fetch(`http://localhost:5000/favorites/rating/${bookId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ rating: newRating }),
+      });
+
+      if (!response.ok) throw new Error(`Failed to update rating for book with ID: ${bookId}`);
+
+      setFavoriteBooks(favoriteBooks.map((book) =>
+        book.bookId === bookId ? { ...book, rating: newRating } : book
+      ));
+    } catch (error) {
+      alert("There was an error updating the rating. Please try again.");
+    }
+  };
+
   const startIndex = (currentPage - 1) * BOOKS_PER_PAGE;
   const paginatedBooks = favoriteBooks.slice(startIndex, startIndex + BOOKS_PER_PAGE);
 
@@ -106,7 +138,18 @@ function Favorites() {
               <div className="book-details">
                 <h3 className="book-title">{book.title}</h3>
                 <p className="book-author">{book.author}</p>
+
+                <div className="heart-icon-container">
+                  {[0, 1, 2].map((index) => (
+                    <FaHeart
+                      key={index}
+                      className={`heart-icon ${book.rating > index ? 'filled' : ''}`}
+                      onClick={() => handleHeartClick(book.bookId, index)}
+                    />
+                  ))}
+                </div>
               </div>
+
               <button className="remove-btn" onClick={() => handleRemoveBook(book.bookId)}>
                 <FaTrash />
               </button>

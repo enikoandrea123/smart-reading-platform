@@ -38,7 +38,7 @@ def get_favorites():
     user_id = get_jwt_identity()
     favorites = FavoriteBook.query.filter_by(user_id=user_id).all()
 
-    favorite_books = [{"book_id": fav.book_id} for fav in favorites]
+    favorite_books = [{"book_id": fav.book_id, "rating": fav.rating} for fav in favorites]
 
     return jsonify(favorite_books), 200
 
@@ -59,3 +59,27 @@ def remove_favorite(book_id):
         db.session.rollback()
         print(f"Error: {str(e)}", file=sys.stderr)
         return jsonify({"error": "Failed to remove from favorites"}), 500
+
+@favorite_routes.route("/favorites/rating/<book_id>", methods=["PUT"])
+@jwt_required()
+def update_rating(book_id):
+    user_id = get_jwt_identity()
+    data = request.json
+    new_rating = data.get("rating")
+
+    if new_rating is None or not (0 <= new_rating <= 3):
+        return jsonify({"error": "Invalid rating value"}), 400
+
+    favorite = FavoriteBook.query.filter_by(user_id=user_id, book_id=book_id).first()
+
+    if not favorite:
+        return jsonify({"error": "Book not found in favorites"}), 404
+
+    try:
+        favorite.rating = new_rating
+        db.session.commit()
+        return jsonify({"message": "Rating updated successfully"}), 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error: {str(e)}", file=sys.stderr)
+        return jsonify({"error": "Failed to update rating"}), 500
