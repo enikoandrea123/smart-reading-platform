@@ -16,7 +16,7 @@ import Profile from './components/Profile';
 import BookDetail from './components/BookDetail';
 import Favorites from './components/Favorites';
 import Track from './components/Track';
-
+import Recommendations from './components/Recommendations';
 
 
 function App() {
@@ -36,6 +36,7 @@ function App() {
         <Route path="/book/:bookId" element={<BookDetail />} />
         <Route path="/favorites" element={<Favorites />} />
         <Route path="/track" element={<Track />} />
+        <Route path="/recommendations" element={<Recommendations />} />
     </Routes>
     <Footer/>
     </Router>
