@@ -1,9 +1,9 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'wouter';
 import './Login.css';
 
 const Login = () => {
-  const navigate = useNavigate();
+  const [, navigate] = useLocation();
 
   const handleSignUp = () => {
     navigate('/signup');
