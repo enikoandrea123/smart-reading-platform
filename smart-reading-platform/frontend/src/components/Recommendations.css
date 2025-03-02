@@ -1,0 +1,24 @@
+.recommendations-container {
+  padding: 20px;
+  text-align: center;
+}
+
+.recommendations-list {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.recommendation-item {
+  width: 200px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.book-cover {
+  width: 150px;
+  height: 220px;
+  object-fit: cover;
+}
