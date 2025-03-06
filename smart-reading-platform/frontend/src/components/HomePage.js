@@ -7,40 +7,92 @@ const HomePage = () => {
   const [newBooks, setNewBooks] = useState([]);
   const [popularBooks, setPopularBooks] = useState([]);
   const [recommendedBooks, setRecommendedBooks] = useState([]);
+  const [loadingNew, setLoadingNew] = useState(true);
+  const [loadingPopular, setLoadingPopular] = useState(true);
+  const [loadingRecommended, setLoadingRecommended] = useState(true);
   const [user, setUser] = useState(null);
 
-  // samle API should be replaced
   useEffect(() => {
-    const mockBooks = [
-      { id: 1, title: 'Book 1', author: 'Author 1',  imageUrl: 'https://via.placeholder.com/150' },
-      { id: 2, title: 'Book 2', author: 'Author 2', imageUrl: 'https://via.placeholder.com/150' },
-      { id: 3, title: 'Book 3', author: 'Author 3', imageUrl: 'https://via.placeholder.com/150' },
-      { id: 4, title: 'Book 4', author: 'Author 4', imageUrl: 'https://via.placeholder.com/150' },
-      { id: 5, title: 'Book 5', author: 'Author 5', imageUrl: 'https://via.placeholder.com/150' },
-      { id: 6, title: 'Book 6', author: 'Author 6', imageUrl: 'https://via.placeholder.com/150' },
-      { id: 7, title: 'Book 7', author: 'Author 7', imageUrl: 'https://via.placeholder.com/150' },
-      { id: 8, title: 'Book 8', author: 'Author 8', imageUrl: 'https://via.placeholder.com/150' },
-      { id: 9, title: 'Book 9', author: 'Author 9', imageUrl: 'https://via.placeholder.com/150' },
-    ];
+    const fetchBooks = async () => {
+      try {
+        const newBooksResponse = await fetch(
+          "https://www.googleapis.com/books/v1/volumes?q=subject:fiction&orderBy=newest&maxResults=10"
+        );
+        const newBooksData = await newBooksResponse.json();
+        setNewBooks(formatBooks(newBooksData));
+      } catch (error) {
+        console.error("Error fetching new books:", error);
+      } finally {
+        setLoadingNew(false);
+      }
 
-    setNewBooks(mockBooks);
-    setPopularBooks(mockBooks);
-    const storedUser = localStorage.getItem('user');
+      try {
+        const popularBooksResponse = await fetch(
+          "https://www.googleapis.com/books/v1/volumes?q=best+books&maxResults=10"
+        );
+        const popularBooksData = await popularBooksResponse.json();
+        setPopularBooks(formatBooks(popularBooksData));
+      } catch (error) {
+        console.error("Error fetching popular books:", error);
+      } finally {
+        setLoadingPopular(false);
+      }
+    };
+
+    const fetchRecommendations = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.warn("No token found, skipping recommendations.");
+          setLoadingRecommended(false);
+          return;
+        }
+
+        const response = await fetch("http://localhost:5000/recommendations", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch recommendations.");
+
+        const data = await response.json();
+        console.log("Recommendations API Response:", data);
+
+        setRecommendedBooks(data.slice(0, 3)); // Show first 3 books
+      } catch (error) {
+        console.error("Error fetching recommendations:", error);
+      } finally {
+        setLoadingRecommended(false);
+      }
+    };
+
+    fetchBooks();
+
+    const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
-      setRecommendedBooks(mockBooks);
+      fetchRecommendations();
+    } else {
+      setLoadingRecommended(false);
     }
   }, []);
 
-  const handleLogout = () => {
-    setUser(null);
-    localStorage.removeItem('user');
-    window.location.href = '/';
+  const formatBooks = (data) => {
+    return (
+      data.items?.map((item) => ({
+        id: item.id,
+        title: item.volumeInfo.title,
+        author: item.volumeInfo.authors?.join(", ") || "Unknown Author",
+        imageUrl: item.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/150",
+      })) || []
+    );
   };
 
   return (
     <div className="app">
-
       <div className="welcome-section">
         {user ? (
           <h1>Welcome back, {user.name}!</h1>
@@ -59,7 +111,6 @@ const HomePage = () => {
           </p>
         </div>
 
-
         {!user && <Login />}
 
         <div className="section-description">
@@ -71,14 +122,16 @@ const HomePage = () => {
         </div>
       </div>
 
-        {user && (
-        <BookCarousel title={`Recommended for You`} books={recommendedBooks} />
+      {user && (
+        <BookCarousel
+          title="Recommended for You"
+          books={recommendedBooks}
+          loading={loadingRecommended}
+          isRecommended={true}
+        />
       )}
-
-      <BookCarousel title="New Arrivals" books={newBooks} />
-
-      <BookCarousel title="Populer Choices" books={popularBooks} />
-
+      <BookCarousel title="New Arrivals" books={newBooks} loading={loadingNew} />
+      <BookCarousel title="Popular Choices" books={popularBooks} loading={loadingPopular} />
     </div>
   );
 };
