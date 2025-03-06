@@ -4,6 +4,7 @@
   background: linear-gradient(135deg, #fdfbfb, #ebedee);
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
 .book-carousel h2 {
@@ -111,23 +112,47 @@
   transform: none;
 }
 
-
-.slick-prev,
-.slick-next {
-  display: none;
+.slick-dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  z-index: 10;
 }
 
+.slick-dots li {
+  margin: 0 5px;
+}
+
+.slick-dots li button {
+  background-color: transparent;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  outline: none;
+}
 
 .slick-dots li button:before {
+  content: '•';
   color: #607d8b;
-  font-size: 12px;
-  transition: color;
+  font-size: 20px;
+  transition: color 0.3s ease;
 }
 
 .slick-dots li.slick-active button:before {
   color: #ffcc80;
 }
 
+.slick-prev,
+.slick-next {
+  display: none;
+}
 
 @media (max-width: 768px) {
   .book-carousel h2 {

@@ -8,7 +8,7 @@ const BookCarousel = ({ title, books, loading, isRecommended = false }) => {
 
   const settings = isRecommended
     ? {
-        dots: false,
+        dots: true,
         infinite: false,
         speed: 500,
         slidesToShow: 3,
@@ -17,7 +17,7 @@ const BookCarousel = ({ title, books, loading, isRecommended = false }) => {
         arrows: false,
       }
     : {
-        dots: false,
+        dots: true,
         infinite: true,
         speed: 500,
         slidesToShow: 3,
