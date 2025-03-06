@@ -39,9 +39,22 @@
   height: auto;
   border-radius: 8px;
   transition: transform 0.3s ease;
-  margin: 0 auto;
+  margin: 0 auto 15px auto;
 }
 
+.book-item h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #37474f;
+  margin-bottom: 10px;
+}
+
+.book-item p {
+  margin: 0;
+  font-size: 1rem;
+  color: #607d8b;
+}
 .book-item:hover {
   transform: scale(1.05);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
