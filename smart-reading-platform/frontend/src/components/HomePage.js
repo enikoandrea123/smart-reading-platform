@@ -6,10 +6,8 @@ import Login from './Login';
 const HomePage = () => {
   const [newBooks, setNewBooks] = useState([]);
   const [popularBooks, setPopularBooks] = useState([]);
-  const [recommendedBooks, setRecommendedBooks] = useState([]);
   const [loadingNew, setLoadingNew] = useState(true);
   const [loadingPopular, setLoadingPopular] = useState(true);
-  const [loadingRecommended, setLoadingRecommended] = useState(true);
   const [user, setUser] = useState(null);
 
   useEffect(() => {
@@ -39,44 +37,11 @@ const HomePage = () => {
       }
     };
 
-    const fetchRecommendations = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          console.warn("No token found, skipping recommendations.");
-          setLoadingRecommended(false);
-          return;
-        }
-
-        const response = await fetch("http://localhost:5000/recommendations", {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        if (!response.ok) throw new Error("Failed to fetch recommendations.");
-
-        const data = await response.json();
-        console.log("Recommendations API Response:", data);
-
-        setRecommendedBooks(data.slice(0, 3)); // Show first 3 books
-      } catch (error) {
-        console.error("Error fetching recommendations:", error);
-      } finally {
-        setLoadingRecommended(false);
-      }
-    };
-
     fetchBooks();
 
     const storedUser = localStorage.getItem("user");
     if (storedUser) {
       setUser(JSON.parse(storedUser));
-      fetchRecommendations();
-    } else {
-      setLoadingRecommended(false);
     }
   }, []);
 
@@ -123,15 +88,11 @@ const HomePage = () => {
       </div>
 
       {user && (
-        <BookCarousel
-          title="Recommended for You"
-          books={recommendedBooks}
-          loading={loadingRecommended}
-          isRecommended={true}
-        />
+        <>
+          <BookCarousel title="New Arrivals" books={newBooks} loading={loadingNew} />
+          <BookCarousel title="Popular Choices" books={popularBooks} loading={loadingPopular} />
+        </>
       )}
-      <BookCarousel title="New Arrivals" books={newBooks} loading={loadingNew} />
-      <BookCarousel title="Popular Choices" books={popularBooks} loading={loadingPopular} />
     </div>
   );
 };
