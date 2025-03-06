@@ -16,7 +16,7 @@ const HomePage = () => {
     const fetchBooks = async () => {
       try {
         const newBooksResponse = await fetch(
-          "https://www.googleapis.com/books/v1/volumes?q=subject:fiction&orderBy=newest&maxResults=10"
+          "https://www.googleapis.com/books/v1/volumes?q=subject:fiction&orderBy=newest&maxResults=9"
         );
         const newBooksData = await newBooksResponse.json();
         setNewBooks(formatBooks(newBooksData));
@@ -28,7 +28,7 @@ const HomePage = () => {
 
       try {
         const popularBooksResponse = await fetch(
-          "https://www.googleapis.com/books/v1/volumes?q=best+books&maxResults=10"
+          "https://www.googleapis.com/books/v1/volumes?q=best+books&maxResults=9"
         );
         const popularBooksData = await popularBooksResponse.json();
         setPopularBooks(formatBooks(popularBooksData));
