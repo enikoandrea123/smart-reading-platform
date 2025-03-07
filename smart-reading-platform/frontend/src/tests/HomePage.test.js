@@ -3,6 +3,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { Router } from "wouter";
 import HomePage from "../components/HomePage";
 import { createMemoryHistory } from 'history';
+import { act } from "@testing-library/react";
 
 global.fetch = jest.fn();
 
@@ -45,6 +46,7 @@ describe("HomePage Component", () => {
   });
 
   afterEach(() => {
+    localStorage.removeItem('user');
     fetch.mockClear();
   });
 
@@ -95,5 +97,109 @@ describe("HomePage Component", () => {
 
     await waitFor(() => expect(screen.queryByText("New Arrivals")).not.toBeInTheDocument());
     await waitFor(() => expect(screen.queryByText("Popular Choices")).not.toBeInTheDocument());
+  });
+
+  test("shows carousels when user is logged in", async () => {
+    localStorage.setItem("user", JSON.stringify({ name: "Test User" }));
+
+    render(
+      <Router>
+        <HomePage />
+      </Router>
+    );
+
+    await waitFor(() => expect(screen.getByText("New Arrivals")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("Popular Choices")).toBeInTheDocument());
+
+    expect(screen.getAllByText("New Book 1").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Popular Book 1").length).toBeGreaterThan(0);
+  });
+
+  test("displays login form if no user is logged in", async () => {
+    await act(async () => {
+      render(
+        <Router>
+          <HomePage />
+        </Router>
+      );
+    });
+
+    expect(screen.getByText("Sign up with Email")).toBeInTheDocument();
+  });
+
+test("loads books after user logs in", async () => {
+  localStorage.setItem("user", JSON.stringify({ name: "Test User" }));
+
+  render(
+    <Router>
+      <HomePage />
+    </Router>
+  );
+
+  await waitFor(() => screen.getByText("New Arrivals"));
+  await waitFor(() => screen.getByText("Popular Choices"));
+
+  const newBooks = screen.getAllByTestId("new-arrivals-book-1");
+  const popularBooks = screen.getAllByTestId("popular-choices-book-2");
+
+  expect(newBooks.length).toBe(3);
+  expect(popularBooks.length).toBe(3);
+});
+
+  test("displays personalized greeting when user is logged in", async () => {
+    localStorage.setItem("user", JSON.stringify({ name: "Test User" }));
+
+    render(
+      <Router>
+        <HomePage />
+      </Router>
+    );
+
+    await waitFor(() => expect(screen.getByText("Welcome back, Test User!")).toBeInTheDocument());
+  });
+
+  test("shows default greeting if no user is logged in", async () => {
+    render(
+      <Router>
+        <HomePage />
+      </Router>
+    );
+
+    expect(screen.getByText("Welcome to ShelfMate!")).toBeInTheDocument();
+  });
+
+  test('shows default state after user logs out', async () => {
+    localStorage.setItem("user", JSON.stringify({ name: "Test User" }));
+
+    render(
+      <Router>
+        <HomePage />
+      </Router>
+    );
+
+    await waitFor(() => expect(screen.getByText("Welcome back, Test User!")).toBeInTheDocument());
+
+    localStorage.removeItem("user");
+
+    render(
+      <Router>
+        <HomePage />
+      </Router>
+    );
+
+    await waitFor(() => expect(screen.getByText("Welcome to ShelfMate!")).toBeInTheDocument());
+  });
+
+  test('displays user greeting when user has name', async () => {
+    const mockUser = { name: 'Jane Doe' };
+    localStorage.setItem('user', JSON.stringify(mockUser));
+
+    render(
+      <Router>
+        <HomePage />
+      </Router>
+    );
+
+    expect(screen.getByText("Welcome back, Jane Doe!")).toBeInTheDocument();
   });
 });
