@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'wouter';
+import { useLocation } from 'wouter';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const navigate = useNavigate();
+  const [, navigate] = useLocation();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -73,7 +73,7 @@ const SignIn = () => {
       </form>
 
       <p>
-        <a href="/forgot-password" onClick={handleForgotPassword}>
+        <a href="/forgot-password" onClick={(e) => { e.preventDefault(); handleForgotPassword(); }}>
           Forgot password?
         </a>
       </p>
