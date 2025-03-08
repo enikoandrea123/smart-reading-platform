@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation } from 'wouter';
+import './SignIn.css';
+
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
