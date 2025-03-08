@@ -1,26 +1,20 @@
 import React, { useState } from 'react';
-import { useLocation } from 'wouter';
 import './SignIn.css';
-
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [, navigate] = useLocation();
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    if (!email || !password) {
-      setError('Email and password are required');
-      return;
-    }
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
     try {
-      const response = await fetch('https://api.example.com/signin', {
+      const response = await fetch('http://127.0.0.1:5000/signin', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({ email, password }),
       });
 
@@ -28,62 +22,73 @@ const SignIn = () => {
 
       if (response.ok) {
         localStorage.setItem('token', data.token);
-        navigate('/');
+        localStorage.setItem('user', JSON.stringify(data.user));
+        alert('Login successful!');
+        window.location.href = '/';
       } else {
-        setError(data.message);
+        setError(data.message || 'Invalid email or password');
       }
-    } catch (error) {
+    } catch (err) {
       setError('Unable to connect to the server');
     }
   };
 
-  const handleSignUp = () => {
-    navigate('/signup');
-  };
-
-  const handleForgotPassword = () => {
-    navigate('/forgot-password');
-  };
-
   return (
     <div className="sign-in-container">
-      <h1>ShelfMate</h1>
-      <h2>Sign In</h2>
-
-      <form onSubmit={handleSubmit} className="sign-in-form">
-        <label htmlFor="email">Email</label>
-        <input
-          id="email"
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-
-        <label htmlFor="password">Password</label>
-        <input
-          id="password"
-          type="password"
-          placeholder="Enter your password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-
-        <button type="submit">Sign In</button>
+      <div className="sign-in-box">
+        <h1 className="shelfmate-title">ShelfMate</h1>
+        <h2 className="sign-in-title">Sign In</h2>
 
         {error && <p style={{ color: 'red' }}>{error}</p>}
-      </form>
 
-      <p>
-        <a href="/forgot-password" onClick={(e) => { e.preventDefault(); handleForgotPassword(); }}>
-          Forgot password?
-        </a>
-      </p>
+        <form className="sign-in-form" onSubmit={handleLogin}>
+          <label htmlFor="email" className="input-label">Email</label>
+          <input
+            id="email"
+            type="email"
+            placeholder="Enter your email"
+            className="sign-in-input"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
 
-      <p>
-        New to ShelfMate?{' '}
-        <button onClick={handleSignUp}>Sign Up</button>
-      </p>
+          <div className="password-row">
+            <label htmlFor="password" className="input-label">Password</label>
+            <a href="/forgot-password" className="forgot-password-link">Forgot password?</a>
+          </div>
+
+          <input
+            id="password"
+            type="password"
+            placeholder="Enter your password"
+            className="sign-in-input"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          <button type="submit" className="sign-in-button">Sign In</button>
+        </form>
+
+        <p className="sign-in-terms">
+          By signing in, you agree to ShelfMate's{' '}
+          <a href="/terms" className="sign-in-link">Terms of Service</a> and{' '}
+          <a href="/privacy" className="sign-in-link">Privacy Policy</a>.
+        </p>
+
+        <hr className="divider-line" />
+
+        <div className="sign-up-section">
+          <p>New to ShelfMate?</p>
+          <button
+            onClick={() => (window.location.href = '/signup')}
+            className="sign-up-button"
+          >
+            Sign Up
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
