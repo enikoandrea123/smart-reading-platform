@@ -202,4 +202,77 @@ test("loads books after user logs in", async () => {
 
     expect(screen.getByText("Welcome back, Jane Doe!")).toBeInTheDocument();
   });
+
+test('displays default greeting when no user is logged in', async () => {
+  localStorage.removeItem("user");
+
+  render(
+    <Router>
+      <HomePage />
+    </Router>
+  );
+
+  await waitFor(() => expect(screen.getByText("Welcome to ShelfMate!")).toBeInTheDocument());
+});
+test('displays personalized greeting when user is logged in', async () => {
+  const mockUser = { name: 'Test User' };
+  localStorage.setItem("user", JSON.stringify(mockUser));
+
+  render(
+    <Router>
+      <HomePage />
+    </Router>
+  );
+
+  await waitFor(() => expect(screen.getByText("Welcome back, Test User!")).toBeInTheDocument());
+});
+
+test('sets user from localStorage when available', async () => {
+  const mockUser = { name: 'Test User' };
+  localStorage.setItem("user", JSON.stringify(mockUser));
+
+  render(
+    <Router>
+      <HomePage />
+    </Router>
+  );
+
+  await waitFor(() => expect(screen.getByText("Welcome back, Test User!")).toBeInTheDocument());
+});
+
+test('keeps user state as null when localStorage is empty', async () => {
+  localStorage.removeItem("user");
+
+  render(
+    <Router>
+      <HomePage />
+    </Router>
+  );
+
+  await waitFor(() => expect(screen.getByText("Welcome to ShelfMate!")).toBeInTheDocument());
+});
+
+test('updates greeting when user logs out', async () => {
+  const mockUser = { name: 'Test User' };
+  localStorage.setItem("user", JSON.stringify(mockUser));
+
+  render(
+    <Router>
+      <HomePage />
+    </Router>
+  );
+
+  await waitFor(() => expect(screen.getByText("Welcome back, Test User!")).toBeInTheDocument());
+
+  localStorage.removeItem("user");
+
+  render(
+    <Router>
+      <HomePage />
+    </Router>
+  );
+
+  await waitFor(() => expect(screen.getByText("Welcome to ShelfMate!")).toBeInTheDocument());
+});
+
 });
