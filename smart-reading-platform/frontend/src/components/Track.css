@@ -69,12 +69,6 @@
   color: #555;
 }
 
-.status-dropdown {
-  margin-left: auto;
-  padding: 5px;
-  font-size: 1rem;
-}
-
 .remove-btn {
   background: none;
   border: none;
@@ -208,4 +202,95 @@
 
 .edit-goal-icon:hover {
   color: #007bff;
+}
+
+.goal-input-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.goal-save-btn {
+  background-color: #4caf50;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.goal-save-btn:hover {
+  background-color: #45a049;
+}
+
+.goal-save-btn:active {
+  transform: scale(0.98);
+}
+
+.goal-cancel-btn {
+  background-color: #f44336;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.goal-cancel-btn:hover {
+  background-color: #d32f2f;
+}
+
+.goal-cancel-btn:active {
+  transform: scale(0.98);
+}
+
+.pagination-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.pagination-btn:hover {
+  background-color: #0056b3;
+}
+
+.pagination-btn:disabled {
+  background-color: #b0c4de;
+  cursor: not-allowed;
+}
+
+li, .link {
+  text-decoration: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+.status-dropdown, .filter-container select {
+  margin-left: auto;
+  padding: 8px;
+  font-size: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #37474f;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.status-dropdown:hover, .filter-container select:hover  {
+  background-color: #f1f1f1;
+}
+
+.status-dropdown:focus, .filter-container select:focus  {
+  outline: none;
+  border-color: #ff8f00;
 }
