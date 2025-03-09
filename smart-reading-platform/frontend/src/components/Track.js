@@ -194,17 +194,29 @@ function Track() {
     ],
   };
 
-  const diagramOptions = {
-    plugins: {
-      tooltip: {
-        callbacks: {
-          label: (tooltipItem) => {
-            return `${tooltipItem.label}: ${tooltipItem.raw} books`;
+      const diagramOptions = {
+      plugins: {
+        tooltip: {
+          backgroundColor: '#333',
+          titleFont: {
+            size: 14,
+            weight: 'bold',
+            family: 'Arial, sans-serif',
           },
+          bodyFont: {
+            size: 12,
+            family: 'Arial, sans-serif',
+          },
+          padding: 10,
+          callbacks: {
+            label: (tooltipItem) => {
+              return `${tooltipItem.raw} books`;
+            },
+          },
+          displayColors: false,
         },
       },
-    },
-  };
+    };
 
   const lastInProgressBook = readingList
     .filter((book) => book.status === "In Progress")
@@ -276,7 +288,6 @@ function Track() {
                 <FaPencilAlt onClick={() => setEditingGoal(true)} className="edit-goal-icon" />
               </>
             )}
-            {completedCount >= goal && <p>Edit Goal</p>}
           </div>
         </div>
 
