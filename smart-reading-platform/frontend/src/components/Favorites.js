@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from "react";
-import "./Favorites.css";
+import { Link } from "wouter";
 import { FaTrash, FaHeart } from "react-icons/fa";
+import "./Favorites.css";
 
 const BOOKS_PER_PAGE = 30;
 
 function Favorites() {
   const [favoriteBooks, setFavoriteBooks] = useState([]);
+  const [filteredBooks, setFilteredBooks] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [ratingFilter, setRatingFilter] = useState(0);
 
   useEffect(() => {
     const fetchFavoriteBooks = async () => {
@@ -51,6 +54,7 @@ function Favorites() {
         );
 
         setFavoriteBooks(bookDetails);
+        setFilteredBooks(bookDetails);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -60,6 +64,15 @@ function Favorites() {
 
     fetchFavoriteBooks();
   }, []);
+
+  useEffect(() => {
+    if (ratingFilter === 0) {
+      setFilteredBooks(favoriteBooks);
+    } else {
+      setFilteredBooks(favoriteBooks.filter(book => book.rating === ratingFilter));
+    }
+    setCurrentPage(1);
+  }, [ratingFilter, favoriteBooks]);
 
   const handleRemoveBook = async (bookId) => {
     try {
@@ -80,6 +93,7 @@ function Favorites() {
       if (!response.ok) throw new Error(`Failed to remove book with ID: ${bookId}`);
 
       setFavoriteBooks(favoriteBooks.filter((book) => book.bookId !== bookId));
+      setFilteredBooks(filteredBooks.filter((book) => book.bookId !== bookId));
     } catch (error) {
       alert("There was an error removing the book. Please try again.");
     }
@@ -111,6 +125,9 @@ function Favorites() {
       setFavoriteBooks(favoriteBooks.map((book) =>
         book.bookId === bookId ? { ...book, rating: newRating } : book
       ));
+      setFilteredBooks(filteredBooks.map((book) =>
+        book.bookId === bookId ? { ...book, rating: newRating } : book
+      ));
     } catch (error) {
       alert("There was an error updating the rating. Please try again.");
     }
@@ -128,40 +145,56 @@ function Favorites() {
     <div className="favorites-container">
       <h1 className="favorites-title">My Favorite Books</h1>
 
+      <div className="filter-container">
+        <label htmlFor="rating-filter">Filter by Rating:</label>
+        <select
+          id="rating-filter"
+          value={ratingFilter}
+          onChange={(e) => setRatingFilter(Number(e.target.value))}
+        >
+          <option value={0}>All</option>
+          <option value={1}>1 Star</option>
+          <option value={2}>2 Stars</option>
+          <option value={3}>3 Stars</option>
+        </select>
+      </div>
+
       {paginatedBooks.length === 0 ? (
         <p className="empty-message">Your favorites list is empty.</p>
       ) : (
         <ul className="favorites-list">
-          {paginatedBooks.map((book) => (
-            <li key={book.bookId} className="favorite-item">
-              <img src={book.cover} alt={book.title} className="book-cover" />
-              <div className="book-details">
-                <h3 className="book-title">{book.title}</h3>
-                <p className="book-author">{book.author}</p>
+  {paginatedBooks.map((book) => (
+    <li key={book.bookId} className="favorite-item">
+      <Link href={`/book/${book.bookId}`} className="reading-item-link">
+        <img src={book.cover} alt={book.title} className="book-cover" />
+      </Link>
+      <div className="book-details">
+        <h3 className="book-title">{book.title}</h3>
+        <p className="book-author">{book.author}</p>
 
-                <div className="heart-icon-container">
-                  {[0, 1, 2].map((index) => (
-                    <FaHeart
-                      key={index}
-                      className={`heart-icon ${book.rating > index ? 'filled' : ''}`}
-                      onClick={() => handleHeartClick(book.bookId, index)}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              <button className="remove-btn" onClick={() => handleRemoveBook(book.bookId)}>
-                <FaTrash />
-              </button>
-            </li>
+        <div className="heart-icon-container">
+          {[0, 1, 2].map((index) => (
+            <FaHeart
+              key={index}
+              className={`heart-icon ${book.rating > index ? 'filled' : ''}`}
+              onClick={() => handleHeartClick(book.bookId, index)}
+            />
           ))}
-        </ul>
+        </div>
+      </div>
+
+      <button className="remove-btn" onClick={() => handleRemoveBook(book.bookId)}>
+        <FaTrash />
+      </button>
+    </li>
+  ))}
+</ul>
       )}
 
       <div className="pagination">
         <button
           className="pagination-btn"
-          disabled={currentPage === 1}
+          disabled={filteredBooks.length === 0 || currentPage === 1}
           onClick={() => setCurrentPage((prev) => prev - 1)}
         >
           Previous
@@ -171,7 +204,7 @@ function Favorites() {
         </span>
         <button
           className="pagination-btn"
-          disabled={currentPage === totalPages}
+          disabled={filteredBooks.length === 0 || currentPage === totalPages}
           onClick={() => setCurrentPage((prev) => prev + 1)}
         >
           Next
