@@ -69,7 +69,7 @@ function Favorites() {
     if (ratingFilter === 0) {
       setFilteredBooks(favoriteBooks);
     } else {
-      setFilteredBooks(favoriteBooks.filter(book => book.rating === ratingFilter));
+      setFilteredBooks(favoriteBooks.filter((book) => book.rating === ratingFilter));
     }
     setCurrentPage(1);
   }, [ratingFilter, favoriteBooks]);
@@ -107,7 +107,7 @@ function Favorites() {
         return;
       }
 
-      const currentRating = favoriteBooks.find(book => book.bookId === bookId).rating;
+      const currentRating = favoriteBooks.find((book) => book.bookId === bookId).rating;
 
       const newRating = currentRating === index + 1 ? 0 : index + 1;
 
@@ -122,21 +122,24 @@ function Favorites() {
 
       if (!response.ok) throw new Error(`Failed to update rating for book with ID: ${bookId}`);
 
-      setFavoriteBooks(favoriteBooks.map((book) =>
-        book.bookId === bookId ? { ...book, rating: newRating } : book
-      ));
-      setFilteredBooks(filteredBooks.map((book) =>
-        book.bookId === bookId ? { ...book, rating: newRating } : book
-      ));
+      setFavoriteBooks(
+        favoriteBooks.map((book) =>
+          book.bookId === bookId ? { ...book, rating: newRating } : book
+        )
+      );
+      setFilteredBooks(
+        filteredBooks.map((book) =>
+          book.bookId === bookId ? { ...book, rating: newRating } : book
+        )
+      );
     } catch (error) {
       alert("There was an error updating the rating. Please try again.");
     }
   };
 
   const startIndex = (currentPage - 1) * BOOKS_PER_PAGE;
-  const paginatedBooks = favoriteBooks.slice(startIndex, startIndex + BOOKS_PER_PAGE);
-
-  const totalPages = Math.ceil(favoriteBooks.length / BOOKS_PER_PAGE);
+  const paginatedBooks = filteredBooks.slice(startIndex, startIndex + BOOKS_PER_PAGE);
+  const totalPages = Math.ceil(filteredBooks.length / BOOKS_PER_PAGE);
 
   if (loading) return <p>Loading favorite books...</p>;
   if (error) return <p>{error}</p>;
@@ -159,36 +162,40 @@ function Favorites() {
         </select>
       </div>
 
+      <span className="book-count">
+        {Math.min(currentPage * BOOKS_PER_PAGE, filteredBooks.length)} out of {filteredBooks.length}
+      </span>
+
       {paginatedBooks.length === 0 ? (
         <p className="empty-message">Your favorites list is empty.</p>
       ) : (
         <ul className="favorites-list">
-  {paginatedBooks.map((book) => (
-    <li key={book.bookId} className="favorite-item">
-      <Link href={`/book/${book.bookId}`} className="reading-item-link">
-        <img src={book.cover} alt={book.title} className="book-cover" />
-      </Link>
-      <div className="book-details">
-        <h3 className="book-title">{book.title}</h3>
-        <p className="book-author">{book.author}</p>
+          {paginatedBooks.map((book) => (
+            <li key={book.bookId} className="favorite-item">
+              <Link href={`/book/${book.bookId}`} className="reading-item-link">
+                <img src={book.cover} alt={book.title} className="book-cover" />
+              </Link>
+              <div className="book-details">
+                <h3 className="book-title">{book.title}</h3>
+                <p className="book-author">{book.author}</p>
 
-        <div className="heart-icon-container">
-          {[0, 1, 2].map((index) => (
-            <FaHeart
-              key={index}
-              className={`heart-icon ${book.rating > index ? 'filled' : ''}`}
-              onClick={() => handleHeartClick(book.bookId, index)}
-            />
+                <div className="heart-icon-container">
+                  {[0, 1, 2].map((index) => (
+                    <FaHeart
+                      key={index}
+                      className={`heart-icon ${book.rating > index ? "filled" : ""}`}
+                      onClick={() => handleHeartClick(book.bookId, index)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <button className="remove-btn" onClick={() => handleRemoveBook(book.bookId)}>
+                <FaTrash />
+              </button>
+            </li>
           ))}
-        </div>
-      </div>
-
-      <button className="remove-btn" onClick={() => handleRemoveBook(book.bookId)}>
-        <FaTrash />
-      </button>
-    </li>
-  ))}
-</ul>
+        </ul>
       )}
 
       <div className="pagination">
