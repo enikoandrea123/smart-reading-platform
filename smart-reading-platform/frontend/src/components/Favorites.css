@@ -1,4 +1,4 @@
-.favorite-container {
+.favorites-container {
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
@@ -7,7 +7,7 @@
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.favorite-title {
+.favorites-title {
   text-align: center;
   font-size: 2rem;
   color: #37474f;
@@ -39,6 +39,8 @@
   align-items: center;
   padding: 10px;
   border-bottom: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 15px;
   animation: fadeIn 0.5s ease-in-out;
   transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -62,6 +64,7 @@
 .book-title {
   font-size: 1.2rem;
   color: #37474f;
+  margin-bottom: 5px;
 }
 
 .book-author {
@@ -115,30 +118,11 @@
   margin-bottom: 20px;
 }
 
-.card {
-  flex: 1;
-  padding: 20px;
-  margin: 0 10px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  text-align: center;
-}
-
 .favorite-card {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-.remove-btn {
-  cursor: pointer;
-  font-size: 20px;
-  color: #d84315;
-}
-
-.remove-btn:hover {
-  color: #b71c1c;
 }
 
 .heart-icon-container {
@@ -159,22 +143,15 @@
   color: #ff4081;
 }
 
-.heart-icon:hover,
-.heart-icon-container:hover .heart-icon {
+.heart-icon:hover {
   color: #ff4081;
 }
 
-.heart-icon-container .heart-icon:nth-child(1):hover ~ .heart-icon {
-  color: #ff4081;
-}
-
-.heart-icon-container .heart-icon:nth-child(2):hover ~ .heart-icon,
-.heart-icon-container .heart-icon:nth-child(1):hover {
-  color: #ff4081;
-}
-
-.heart-icon-container .heart-icon:nth-child(3):hover ~ .heart-icon,
-.heart-icon-container .heart-icon:nth-child(2):hover,
-.heart-icon-container .heart-icon:nth-child(1):hover {
-  color: #ff4081;
+.book-count {
+  display: block;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #37474f;
+  margin: 10px 0;
 }
