@@ -3,7 +3,7 @@ import { Link } from "wouter";
 import { FaTrash, FaHeart } from "react-icons/fa";
 import "./Favorites.css";
 
-const BOOKS_PER_PAGE = 30;
+const BOOKS_PER_PAGE = 10;
 
 function Favorites() {
   const [favoriteBooks, setFavoriteBooks] = useState([]);
