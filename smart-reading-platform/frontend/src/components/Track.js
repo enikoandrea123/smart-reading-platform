@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import "./Track.css";
-import { FaTrash, FaPencilAlt } from "react-icons/fa";
+import { FaTrash, FaPencilAlt, FaPlay } from "react-icons/fa";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const BOOKS_PER_PAGE = 30;
+const BOOKS_PER_PAGE = 10;
 
 function Track() {
   const [readingList, setReadingList] = useState([]);
@@ -17,6 +17,7 @@ function Track() {
   const [goal, setGoal] = useState(0);
   const [editingGoal, setEditingGoal] = useState(false);
   const [newGoal, setNewGoal] = useState(0);
+  const [goalActivated, setGoalActivated] = useState(false);
 
   useEffect(() => {
     const fetchReadingListAndGoal = async () => {
@@ -72,6 +73,7 @@ function Track() {
 
         const goalData = await goalResponse.json();
         setGoal(goalData.goal);
+        setGoalActivated(goalData.goal > 0);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -136,6 +138,11 @@ function Track() {
   };
 
   const handleGoalChange = async () => {
+    if (newGoal <= goal) {
+      alert("Goal must be greater than the previous goal.");
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -155,6 +162,7 @@ function Track() {
       if (!response.ok) throw new Error("Failed to update the reading goal");
 
       setGoal(newGoal);
+      setGoalActivated(true);
       setEditingGoal(false);
     } catch (error) {
       alert("There was an error updating the goal. Please try again.");
@@ -194,8 +202,8 @@ function Track() {
       tooltip: {
         callbacks: {
           label: (tooltipItem) => {
-            const percentage = (tooltipItem.raw / totalBooks) * 100;
-            return `${tooltipItem.label}: ${percentage.toFixed(2)}%`;
+            const total = notStartedCount + inProgressCount + completedCount;
+            return `${tooltipItem.label}: ${tooltipItem.raw} books`;
           },
         },
       },
@@ -205,6 +213,8 @@ function Track() {
   const lastInProgressBook = readingList
     .filter((book) => book.status === "In Progress")
     .slice(-1)[0];
+
+  const goalProgress = goal > 0 ? (completedCount / goal) * 100 : 0;
 
   if (loading) return <p>Loading reading list...</p>;
   if (error) return <p>{error}</p>;
@@ -244,32 +254,50 @@ function Track() {
         )}
 
         <div className="goal-container card">
-          {goal === 0 ? (
-            <p>You have not set a reading goal. Please set a goal to track your progress.</p>
-          ) : (
-            <p>You have set a goal of {goal} books. Keep going!</p>
-          )}
-
-          {completedCount >= goal && goal > 0 ? (
-            <p>Congratulations! You've reached your reading goal! Set a new goal.</p>
-          ) : (
-            <div className="goal-edit">
-             {editingGoal ? (
-  <div>
-    <input
-      type="number"
-      value={newGoal}
-      onChange={(e) => setNewGoal(Math.max(0, e.target.value))}
-      min="0"
-    />
-    <button onClick={handleGoalChange}>Save Goal</button>
-    <button onClick={() => setEditingGoal(false)}>Cancel</button>
-  </div>
-) : (
-  <FaPencilAlt onClick={() => setEditingGoal(true)} className="edit-goal-icon" />
-)}
+          {goal > 0 && (
+            <div>
+              <p className="goal-message">
+                Your current goal is <strong>{goal}</strong> books.
+              </p>
+              <div className="goal-progress">
+                <div className="goal-bar">
+                  <div
+                    className="goal-progress-bar"
+                    style={{ width: `${goalProgress}%` }}
+                  ></div>
+                </div>
+                <p>{completedCount}/{goal} books completed</p>
+              </div>
             </div>
           )}
+
+          <div className="goal-completion-message">
+            <p>Set a new goal:</p>
+            <div className="goal-edit-btn-container">
+              {completedCount >= goal && (
+                <FaPencilAlt onClick={() => setEditingGoal(true)} className="edit-goal-icon" />
+              )}
+              {completedCount >= goal && <p>Edit Goal</p>}
+            </div>
+          </div>
+
+          {editingGoal ? (
+            <div className="goal-input-container">
+              <input
+                type="number"
+                value={newGoal}
+                onChange={(e) => setNewGoal(Math.max(0, e.target.value))}
+                min="0"
+                className="goal-input"
+              />
+              <button onClick={handleGoalChange} className="goal-save-btn">
+                Save Goal
+              </button>
+              <button onClick={() => setEditingGoal(false)} className="goal-cancel-btn">
+                Cancel
+              </button>
+            </div>
+          ) : null}
         </div>
       </div>
 
