@@ -3,6 +3,8 @@ import "./Track.css";
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Link } from "wouter";
+
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -265,15 +267,18 @@ function Track() {
             </div>
           )}
 
-          <div className="goal-completion-message">
-            <p>Set a new goal:</p>
-            <div className="goal-edit-btn-container">
-              {completedCount >= goal && (
+         <div className="goal-completion-message">
+          <div className="goal-edit-btn-container">
+            {completedCount >= goal && (
+              <>
+                <p>Congratulations! You reached your goal!</p>
+                <p>Set a new goal:</p>
                 <FaPencilAlt onClick={() => setEditingGoal(true)} className="edit-goal-icon" />
-              )}
-              {completedCount >= goal && <p>Edit Goal</p>}
-            </div>
+              </>
+            )}
+            {completedCount >= goal && <p>Edit Goal</p>}
           </div>
+        </div>
 
           {editingGoal ? (
             <div className="goal-input-container">
@@ -318,29 +323,34 @@ function Track() {
       {paginatedBooks.length === 0 ? (
         <p className="empty-message">Your reading list is empty.</p>
       ) : (
-        <ul className="reading-list">
-          {paginatedBooks.map((book) => (
-            <li key={book.bookId} className="reading-item">
-              <img src={book.cover} alt={book.title} className="book-cover" />
-              <div className="book-details">
-                <h3 className="book-title">{book.title}</h3>
-                <p className="book-author">{book.author}</p>
-              </div>
-              <select
-                className="status-dropdown"
-                value={book.status}
-                onChange={(e) => handleChangeStatus(book.bookId, e.target.value)}
-              >
-                <option value="Not Started">Not Started</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Completed">Completed</option>
-              </select>
-              <button className="remove-btn" onClick={() => handleRemoveBook(book.bookId)}>
-                <FaTrash />
-              </button>
-            </li>
-          ))}
-        </ul>
+       <ul className="reading-list">
+  {paginatedBooks.map((book) => (
+    <Link key={book.bookId} href={`/book/${book.bookId}`} className="reading-item-link">
+      <li className="reading-item">
+        <img src={book.cover} alt={book.title} className="book-cover" />
+        <div className="book-details">
+          <h3 className="book-title">{book.title}</h3>
+          <p className="book-author">{book.author}</p>
+        </div>
+        <select
+          className="status-dropdown"
+          value={book.status}
+          onChange={(e) => handleChangeStatus(book.bookId, e.target.value)}
+        >
+          <option value="Not Started">Not Started</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
+        </select>
+        <button className="remove-btn" onClick={(e) => {
+          e.preventDefault();
+          handleRemoveBook(book.bookId);
+        }}>
+          <FaTrash />
+        </button>
+      </li>
+    </Link>
+  ))}
+</ul>
       )}
 
       <div className="pagination">
