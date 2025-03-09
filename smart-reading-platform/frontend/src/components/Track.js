@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./Track.css";
-import { FaTrash, FaPencilAlt, FaPlay } from "react-icons/fa";
+import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
@@ -17,7 +17,6 @@ function Track() {
   const [goal, setGoal] = useState(0);
   const [editingGoal, setEditingGoal] = useState(false);
   const [newGoal, setNewGoal] = useState(0);
-  const [goalActivated, setGoalActivated] = useState(false);
 
   useEffect(() => {
     const fetchReadingListAndGoal = async () => {
@@ -73,7 +72,6 @@ function Track() {
 
         const goalData = await goalResponse.json();
         setGoal(goalData.goal);
-        setGoalActivated(goalData.goal > 0);
       } catch (error) {
         setError(error.message);
       } finally {
@@ -162,7 +160,6 @@ function Track() {
       if (!response.ok) throw new Error("Failed to update the reading goal");
 
       setGoal(newGoal);
-      setGoalActivated(true);
       setEditingGoal(false);
     } catch (error) {
       alert("There was an error updating the goal. Please try again.");
@@ -183,8 +180,6 @@ function Track() {
   const inProgressCount = filteredBooks.filter((book) => book.status === "In Progress").length;
   const completedCount = filteredBooks.filter((book) => book.status === "Completed").length;
 
-  const totalBooks = filteredBooks.length;
-
   const diagramData = {
     labels: ['Not Started', 'In Progress', 'Completed'],
     datasets: [
@@ -202,7 +197,6 @@ function Track() {
       tooltip: {
         callbacks: {
           label: (tooltipItem) => {
-            const total = notStartedCount + inProgressCount + completedCount;
             return `${tooltipItem.label}: ${tooltipItem.raw} books`;
           },
         },
