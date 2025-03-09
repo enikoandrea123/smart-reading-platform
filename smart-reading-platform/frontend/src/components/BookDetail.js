@@ -9,7 +9,6 @@ function BookDetail() {
   const [error, setError] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isInReadingList, setIsInReadingList] = useState(false);
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   useEffect(() => {
     if (!bookId) {
@@ -79,7 +78,6 @@ function BookDetail() {
           const isBookInList = data.some((item) => item.book_id === bookId);
 
           setIsInReadingList(isBookInList);
-          setIsButtonDisabled(isBookInList);
         }
       } catch (error) {
         console.error("Error checking reading list:", error);
@@ -168,7 +166,6 @@ function BookDetail() {
       console.log("Successfully added to reading list:", data);
 
       setIsInReadingList(true);
-      setIsButtonDisabled(true);
       alert("Book added to your reading list!");
 
     } catch (error) {
@@ -201,7 +198,6 @@ function BookDetail() {
       }
 
       setIsInReadingList(false);
-      setIsButtonDisabled(false);
       alert("Book removed from your reading list!");
     } catch (error) {
       console.error("Error removing from reading list:", error);
@@ -296,20 +292,19 @@ function BookDetail() {
           ❤️ {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
         </button>
 
-        <button
-          className={`bookmark-btn ${isInReadingList ? "active" : ""}`}
-          onClick={() => {
-            if (isInReadingList) {
-              handleRemoveFromReadingList();
-            } else {
-              handleAddToReadingList();
-            }
-          }}
-          disabled={isButtonDisabled}
-        >
-          📖 {isInReadingList ? "Book added to the list" : "Add to Reading List"}
-        </button>
-      </div>
+       <button
+    className={`bookmark-btn ${isInReadingList ? "active" : ""}`}
+    onClick={() => {
+      if (isInReadingList) {
+        handleRemoveFromReadingList();
+      } else {
+        handleAddToReadingList();
+      }
+    }}
+  >
+    📖 {isInReadingList ? "Remove from Reading List" : "Add to Reading List"}
+  </button>
+</div>
 
       <h1>{book?.title}</h1>
       {book?.subtitle && <h2 className="book-subtitle">{book.subtitle}</h2>}
