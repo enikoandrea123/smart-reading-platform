@@ -9,6 +9,8 @@ from .routes.favorite_routes import favorite_routes
 from .routes.reading_list_routes import reading_list_routes
 from flask_migrate import Migrate
 from .routes.recommendations_routes import recommendations_routes
+from .routes.password_routes import password_routes
+from dotenv import load_dotenv
 
 migrate = Migrate()
 
@@ -22,12 +24,14 @@ def create_app():
     app.config['CORS_HEADERS'] = 'Content-Type'
     CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
     JWTManager(app)
+    load_dotenv()
 
     app.register_blueprint(auth_routes)
     app.register_blueprint(book_routes)
     app.register_blueprint(favorite_routes)
     app.register_blueprint(reading_list_routes)
     app.register_blueprint(recommendations_routes)
+    app.register_blueprint(password_routes)
 
     @app.after_request
     def after_request(response):
