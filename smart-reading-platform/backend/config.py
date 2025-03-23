@@ -11,3 +11,6 @@ class Config:
     JWT_SECRET_KEY = "titkos_kulcs"
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=6)
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
+
+    BREVO_API_KEY = os.getenv('BREVO_API_KEY', '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')
+    BREVO_SENDER_EMAIL = os.getenv('BREVO_SENDER_EMAIL', 'shelfmate.assistant@gmail.com')
