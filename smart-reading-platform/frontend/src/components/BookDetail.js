@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from 'wouter';
 import './BookDetail.css';
+import BookCarousel from './BookCarousel';
+import './BookCarousel.css';
 
 function BookDetail() {
   const { bookId } = useParams();
@@ -9,6 +11,7 @@ function BookDetail() {
   const [error, setError] = useState(null);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isInReadingList, setIsInReadingList] = useState(false);
+  const [recommendedBooks, setRecommendedBooks] = useState([]);
 
   useEffect(() => {
     if (!bookId) {
@@ -57,6 +60,46 @@ function BookDetail() {
         console.error("Error fetching book details:", error);
       } finally {
         setLoading(false);
+      }
+    };
+
+  const fetchRecommendedBooks = async () => {
+      if (book?.genre) {
+        try {
+          const genres = book.genre.split(",").map(genre => genre.trim());
+          const genreQuery = genres.join(" OR ");
+          const apiUrl = `https://www.googleapis.com/books/v1/volumes?q=subject:(${genreQuery})&maxResults=9`;
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+
+          const mappedBooks = data.items?.map((item) => ({
+            id: item.id,
+            title: item.volumeInfo.title,
+            author: item.volumeInfo.authors?.join(", ") || "Unknown Author",
+            coverImage: item.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/150",
+          }));
+
+          setRecommendedBooks(mappedBooks || []);
+        } catch (error) {
+          console.error("Error fetching recommended books:", error);
+        }
+      } else {
+        try {
+          const apiUrl = `https://www.googleapis.com/books/v1/volumes?q=subject:&maxResults=9`;
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+
+          const mappedBooks = data.items?.map((item) => ({
+            id: item.id,
+            title: item.volumeInfo.title,
+            author: item.volumeInfo.authors?.join(", ") || "Unknown Author",
+            coverImage: item.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/150",
+          }));
+
+          setRecommendedBooks(mappedBooks || []);
+        } catch (error) {
+          console.error("Error fetching random books:", error);
+        }
       }
     };
 
@@ -111,7 +154,9 @@ function BookDetail() {
     fetchBookDetail();
     checkIfBookInReadingList();
     checkIfBookInFavorites();
-  }, [bookId]);
+    fetchRecommendedBooks();
+
+  }, [bookId, book?.genre]);
 
   const cleanText = (html) => {
     if (!html) return "";
@@ -276,7 +321,8 @@ function BookDetail() {
   if (loading) return <p>Loading book details...</p>;
   if (error) return <p>{error}</p>;
 
-  return (
+return (
+  <>
     <div className="book-detail-container">
       <div className="book-actions">
         <button
@@ -292,19 +338,19 @@ function BookDetail() {
           ❤️ {isFavorite ? "Remove from Favorites" : "Add to Favorites"}
         </button>
 
-       <button
-    className={`bookmark-btn ${isInReadingList ? "active" : ""}`}
-    onClick={() => {
-      if (isInReadingList) {
-        handleRemoveFromReadingList();
-      } else {
-        handleAddToReadingList();
-      }
-    }}
-  >
-    📖 {isInReadingList ? "Remove from Reading List" : "Add to Reading List"}
-  </button>
-</div>
+        <button
+          className={`bookmark-btn ${isInReadingList ? "active" : ""}`}
+          onClick={() => {
+            if (isInReadingList) {
+              handleRemoveFromReadingList();
+            } else {
+              handleAddToReadingList();
+            }
+          }}
+        >
+          📖 {isInReadingList ? "Remove from Reading List" : "Add to Reading List"}
+        </button>
+      </div>
 
       <h1>{book?.title}</h1>
       {book?.subtitle && <h2 className="book-subtitle">{book.subtitle}</h2>}
@@ -335,7 +381,14 @@ function BookDetail() {
         Preview this book
       </a>
     </div>
-  );
+
+    {recommendedBooks.length > 0 && (
+        <div className="book-carousel-container">
+          <BookCarousel books={recommendedBooks} title="Recommended Books" />
+        </div>
+      )}
+  </>
+);
 }
 
 export default BookDetail;
