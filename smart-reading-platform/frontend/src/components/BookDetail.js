@@ -63,45 +63,43 @@ function BookDetail() {
       }
     };
 
-  const fetchRecommendedBooks = async () => {
-      if (book?.genre) {
-        try {
-          const genres = book.genre.split(",").map(genre => genre.trim());
-          const genreQuery = genres.join(" OR ");
-          const apiUrl = `https://www.googleapis.com/books/v1/volumes?q=subject:(${genreQuery})&maxResults=9`;
-          const response = await fetch(apiUrl);
-          const data = await response.json();
+const fetchRecommendedBooks = async () => {
+  try {
+    if (book?.genre) {
+      const genres = book.genre.split(",").map(genre => genre.trim());
+      const genreQuery = genres.join(" OR ");
 
-          const mappedBooks = data.items?.map((item) => ({
-            id: item.id,
-            title: item.volumeInfo.title,
-            author: item.volumeInfo.authors?.join(", ") || "Unknown Author",
-            coverImage: item.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/150",
-          }));
+      const recommendedBooksResponse = await fetch(
+        `https://www.googleapis.com/books/v1/volumes?q=subject:(${genreQuery})&maxResults=9`
+      );
+      const recommendedBooksData = await recommendedBooksResponse.json();
 
-          setRecommendedBooks(mappedBooks || []);
-        } catch (error) {
-          console.error("Error fetching recommended books:", error);
-        }
-      } else {
-        try {
-          const apiUrl = `https://www.googleapis.com/books/v1/volumes?q=subject:&maxResults=9`;
-          const response = await fetch(apiUrl);
-          const data = await response.json();
+      const mappedRecommendedBooks = formatBooks(recommendedBooksData);
+      setRecommendedBooks(mappedRecommendedBooks);
+    } else {
+      const randomBooksResponse = await fetch(
+        "https://www.googleapis.com/books/v1/volumes?q=subject:&maxResults=9"
+      );
+      const randomBooksData = await randomBooksResponse.json();
 
-          const mappedBooks = data.items?.map((item) => ({
-            id: item.id,
-            title: item.volumeInfo.title,
-            author: item.volumeInfo.authors?.join(", ") || "Unknown Author",
-            coverImage: item.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/150",
-          }));
+      const mappedRandomBooks = formatBooks(randomBooksData);
+      setRecommendedBooks(mappedRandomBooks);
+    }
+  } catch (error) {
+    console.error("Error fetching recommended books:", error);
+  }
+};
 
-          setRecommendedBooks(mappedBooks || []);
-        } catch (error) {
-          console.error("Error fetching random books:", error);
-        }
-      }
-    };
+const formatBooks = (data) => {
+  return (
+    data.items?.map((item) => ({
+      id: item.id,
+      title: item.volumeInfo.title,
+      author: item.volumeInfo.authors?.join(", ") || "Unknown Author",
+      coverImage: item.volumeInfo.imageLinks?.thumbnail || "https://via.placeholder.com/150",
+    })) || []
+  );
+};
 
     const checkIfBookInReadingList = async () => {
       const token = localStorage.getItem("token");
