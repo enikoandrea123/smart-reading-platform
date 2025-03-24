@@ -70,7 +70,7 @@ def signin():
 @jwt_required()
 def profile():
     user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
 
     if not user:
         return jsonify({"message": "User not found"}), 404
@@ -88,7 +88,7 @@ def change_password():
         return jsonify({"message": "Current password and new password are required"}), 400
 
     user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
 
     if not user or not check_password_hash(user.password, current_password):
         return jsonify({"message": "Incorrect current password"}), 401
@@ -113,7 +113,7 @@ def delete_account():
         return jsonify({"message": "Current password is required"}), 400
 
     user_id = get_jwt_identity()
-    user = User.query.get(user_id)
+    user = db.session.get(User, user_id)
 
     if not user or not check_password_hash(user.password, current_password):
         return jsonify({"message": "Incorrect current password"}), 401
