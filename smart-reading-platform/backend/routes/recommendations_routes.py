@@ -19,7 +19,7 @@ def get_recommendations():
     all_books = favorite_books + reading_list_books
 
     if not all_books:
-        return jsonify({"message": "No favorites or reading list found."}), 400
+        return jsonify(get_random_recommendations()), 200
 
     user_genres = []
     for book in all_books:
@@ -33,11 +33,14 @@ def get_recommendations():
             user_genres.extend(genres)
 
     if not user_genres:
-        return get_random_recommendations()
+        return jsonify(get_random_recommendations()), 200
 
     user_genres = list(set(user_genres))
 
     recommended_books = get_books_by_genre(user_genres)
+
+    if not recommended_books:
+        return jsonify(get_random_recommendations()), 200
 
     recommendations = random.sample(recommended_books, 3)
 

@@ -7,6 +7,7 @@
   display: flex;
   justify-content: center;
   gap: 20px;
+  flex-wrap: wrap;
 }
 
 .recommendation-item {
@@ -15,10 +16,86 @@
   border: 1px solid #ddd;
   border-radius: 5px;
   text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+}
+
+.recommendation-item:hover {
+  transform: translateY(-5px);
 }
 
 .book-cover {
   width: 150px;
   height: 220px;
   object-fit: cover;
+  border-radius: 5px;
+}
+
+.like-question {
+  margin-top: 30px;
+}
+
+.like-question p {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.thumbs-up,
+.thumbs-down {
+  background-color: #fff;
+  border: 2px solid #ddd;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin: 0 10px;
+}
+
+.thumbs-up:hover,
+.thumbs-down:hover {
+  background-color: #f0f0f0;
+  transform: scale(1.1);
+}
+
+.thumbs-up:disabled,
+.thumbs-down:disabled {
+  cursor: not-allowed;
+  background-color: #e0e0e0;
+}
+
+.response-message {
+  margin-top: 20px;
+  font-size: 16px;
+}
+
+.response-message button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.response-message button:hover {
+  background-color: #45a049;
+}
+
+.recommendations-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+}
+
+.recommendation-item {
+  width: 250px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.recommendation-item:hover {
+  transform: translateY(-5px);
 }
