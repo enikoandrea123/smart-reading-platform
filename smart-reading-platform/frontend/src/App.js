@@ -17,6 +17,7 @@ import BookDetail from './components/BookDetail';
 import Favorites from './components/Favorites';
 import Track from './components/Track';
 import Recommendations from './components/Recommendations';
+import Contact from './components/Contact';
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
       <Route path="/favorites" component={Favorites} />
       <Route path="/track" component={Track} />
       <Route path="/recommendations" component={Recommendations} />
+      <Route path="/contact" component={Contact} />
       <Footer />
     </Router>
   );
