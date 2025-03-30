@@ -11,6 +11,7 @@ from flask_migrate import Migrate
 from .routes.recommendations_routes import recommendations_routes
 from .routes.password_routes import password_routes
 from dotenv import load_dotenv
+from .routes.admin_routes import admin_routes, create_admin
 
 migrate = Migrate()
 
@@ -32,6 +33,11 @@ def create_app():
     app.register_blueprint(reading_list_routes)
     app.register_blueprint(recommendations_routes)
     app.register_blueprint(password_routes)
+    app.register_blueprint(admin_routes, url_prefix="/admin")
+
+    with app.app_context():
+        db.create_all()
+        create_admin()
 
     @app.after_request
     def after_request(response):
