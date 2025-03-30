@@ -18,6 +18,8 @@ import Favorites from './components/Favorites';
 import Track from './components/Track';
 import Recommendations from './components/Recommendations';
 import Contact from './components/Contact';
+import ManageUsers from "./components/ManageUsers";
+
 
 function App() {
   return (
@@ -37,6 +39,7 @@ function App() {
       <Route path="/track" component={Track} />
       <Route path="/recommendations" component={Recommendations} />
       <Route path="/contact" component={Contact} />
+      <Route path="/manageusers" component={ManageUsers} />
       <Footer />
     </Router>
   );
