@@ -1,7 +1,7 @@
 from flask import request, jsonify, Blueprint
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, create_refresh_token
-from datetime import timedelta
+from datetime import timedelta, datetime
 from ..models.user import User
 from ..extensions import db
 
@@ -54,6 +54,9 @@ def signin():
 
     if not user or not check_password_hash(user.password, password):
         return jsonify({"message": "Invalid credentials"}), 401
+
+    user.last_login = datetime.utcnow()
+    db.session.commit()
 
     access_token = create_access_token(identity=user.id, expires_delta=timedelta(hours=6))
     refresh_token = create_refresh_token(identity=user.id)

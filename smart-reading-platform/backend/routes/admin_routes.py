@@ -26,17 +26,45 @@ def create_admin():
 
 @admin_routes.route("/manageusers", methods=["GET"])
 @jwt_required()
-def manage_users():
+def get_all_users():
     current_user = get_jwt_identity()
-    user = User.query.filter_by(name=current_user).first()
+    print(f"Current user ID: {current_user}")
 
-    if not user or not user.is_admin:
-        return jsonify({"message": "Unauthorized access"}), 403
+    admin = User.query.filter_by(id=current_user, is_admin=True).first()
+    if not admin:
+        return jsonify({"message": "Unauthorized access, admin privileges required"}), 403
 
     users = User.query.all()
-    users_list = [{"id": u.id, "name": u.name, "email": u.email} for u in users]
+    users_list = [
+        {
+            "id": u.id,
+            "name": u.name,
+            "email": u.email,
+            "last_login": u.last_login.strftime("%Y-%m-%d %H:%M:%S") if u.last_login else "Never"
+        }
+        for u in users if not u.is_admin
+    ]
 
-    return jsonify({"users": users_list})
+    return jsonify(users_list)
+
+@admin_routes.route("/deleteuser/<int:user_id>", methods=["DELETE"])
+@jwt_required()
+def delete_user(user_id):
+    current_user = get_jwt_identity()
+    admin = User.query.filter_by(name=current_user, is_admin=True).first()
+
+    if not admin:
+        return jsonify({"message": "Unauthorized access"}), 403
+
+    user = User.query.get(user_id)
+
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    db.session.delete(user)
+    db.session.commit()
+
+    return jsonify({"message": f"User {user.name} deleted successfully"})
 
 
 @admin_routes.route("/statistic", methods=["GET"])
