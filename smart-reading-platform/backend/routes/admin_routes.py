@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.security import generate_password_hash
@@ -5,6 +6,8 @@ from ..models.user import User
 from ..extensions import db
 from sib_api_v3_sdk import Configuration, ApiClient, TransactionalEmailsApi, SendSmtpEmail
 import os
+from ..models.favorite import FavoriteBook
+from ..models.reading_list import ReadingList
 
 admin_routes = Blueprint("admin_routes", __name__)
 
@@ -121,18 +124,41 @@ def send_account_deletion_email(user):
     except Exception as e:
         print(f"Failed to send account deletion email: {str(e)}")
 
-@admin_routes.route("/statistic", methods=["GET"])
+@admin_routes.route("/statistics", methods=["GET"])
 @jwt_required()
 def statistics():
-    current_user = get_jwt_identity()
-    user = User.query.filter_by(name=current_user).first()
+    current_user_id = get_jwt_identity()
 
-    if not user or not user.is_admin:
-        return jsonify({"message": "Unauthorized access"}), 403
+    admin = User.query.filter_by(id=current_user_id, is_admin=True).first()
+    if not admin:
+        return jsonify({"message": "Unauthorized access, admin privileges required"}), 403
 
     total_users = User.query.count()
+    total_favorites = FavoriteBook.query.count()
+    total_reading_list = ReadingList.query.count()
+    active_users = User.query.filter(User.last_login >= datetime.utcnow() - timedelta(days=30)).count()
+
+    active_users_by_day = (
+        db.session.query(
+            db.func.date(User.last_login).label("date"),
+            db.func.count(User.id).label("count"),
+        )
+        .filter(User.last_login >= datetime.utcnow() - timedelta(days=30))
+        .group_by(db.func.date(User.last_login))
+        .all()
+    )
+
+    if not active_users_by_day:
+        active_users_by_day = [{"date": "No data", "count": 0}]
+
+    else:
+        active_users_by_day = [{"date": day[0] if isinstance(day[0], str) else day[0].strftime("%Y-%m-%d"), "count": day[1]} for day in active_users_by_day]
 
     return jsonify({
         "total_users": total_users,
-        "message": "Statistics data will be implemented here."
+        "total_favorites": total_favorites,
+        "total_reading_list": total_reading_list,
+        "active_users": active_users,
+        "active_users_by_day": active_users_by_day,
+        "message": "Statistics data fetched successfully"
     })

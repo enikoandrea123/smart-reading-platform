@@ -19,6 +19,7 @@ import Track from './components/Track';
 import Recommendations from './components/Recommendations';
 import Contact from './components/Contact';
 import ManageUsers from "./components/ManageUsers";
+import Statistics from "./components/Statistics";
 
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
       <Route path="/recommendations" component={Recommendations} />
       <Route path="/contact" component={Contact} />
       <Route path="/manageusers" component={ManageUsers} />
+      <Route path="/statistics" component={Statistics} />
       <Footer />
     </Router>
   );
