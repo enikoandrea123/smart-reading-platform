@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+  import React, { useEffect, useState } from "react";
 
 const ManageUsers = () => {
     const [users, setUsers] = useState([]);
@@ -9,7 +9,7 @@ const ManageUsers = () => {
         if (token) {
             fetchUsers();
         } else {
-            setError("You must be logged in to access this page.");
+            setError("You must be an admin to access this page.");
         }
     }, [token]);
 
@@ -41,14 +41,16 @@ const ManageUsers = () => {
                 headers: { Authorization: `Bearer ${token}` }
             });
 
+            const responseData = await response.json();
+
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.message || "Failed to delete user");
+                throw new Error(responseData.message || "Failed to delete user");
             }
 
             setUsers(users.filter(user => user.id !== userId));
         } catch (error) {
             console.error("Error deleting user:", error);
+            setError(error.message);
         }
     };
 

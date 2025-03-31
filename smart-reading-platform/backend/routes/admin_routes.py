@@ -27,10 +27,10 @@ def create_admin():
 @admin_routes.route("/manageusers", methods=["GET"])
 @jwt_required()
 def get_all_users():
-    current_user = get_jwt_identity()
-    print(f"Current user ID: {current_user}")
+    current_user_id = get_jwt_identity()
+    print(f"Current user ID: {current_user_id}")
 
-    admin = User.query.filter_by(id=current_user, is_admin=True).first()
+    admin = User.query.filter_by(id=current_user_id, is_admin=True).first()
     if not admin:
         return jsonify({"message": "Unauthorized access, admin privileges required"}), 403
 
@@ -50,22 +50,26 @@ def get_all_users():
 @admin_routes.route("/deleteuser/<int:user_id>", methods=["DELETE"])
 @jwt_required()
 def delete_user(user_id):
-    current_user = get_jwt_identity()
-    admin = User.query.filter_by(name=current_user, is_admin=True).first()
+    current_user_id = get_jwt_identity()
 
+    admin = User.query.filter_by(id=current_user_id, is_admin=True).first()
     if not admin:
         return jsonify({"message": "Unauthorized access"}), 403
 
-    user = User.query.get(user_id)
+    if current_user_id == user_id:
+        return jsonify({"message": "Admins cannot delete themselves"}), 403
 
+    user = User.query.get(user_id)
     if not user:
         return jsonify({"message": "User not found"}), 404
 
-    db.session.delete(user)
-    db.session.commit()
-
-    return jsonify({"message": f"User {user.name} deleted successfully"})
-
+    try:
+        db.session.delete(user)
+        db.session.commit()
+        return jsonify({"message": f"User {user.name} deleted successfully"})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"message": f"Error deleting user: {str(e)}"}), 500
 
 @admin_routes.route("/statistic", methods=["GET"])
 @jwt_required()
