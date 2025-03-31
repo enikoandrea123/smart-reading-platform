@@ -4,6 +4,9 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from datetime import timedelta, datetime
 from ..models.user import User
 from ..extensions import db
+from sib_api_v3_sdk import Configuration, ApiClient, TransactionalEmailsApi, SendSmtpEmail
+import os
+
 
 auth_routes = Blueprint('auth', __name__, url_prefix='/')
 
@@ -31,6 +34,9 @@ def signup():
         access_token = create_access_token(identity=new_user.id, expires_delta=timedelta(hours=6))
         refresh_token = create_refresh_token(identity=new_user.id)
 
+        # Send Welcome Email
+        send_welcome_email(new_user)
+
         return jsonify({
             "message": "User registered successfully",
             "token": access_token,
@@ -40,6 +46,51 @@ def signup():
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": "Error registering user", "error": str(e)}), 500
+
+
+def send_welcome_email(user):
+    config = Configuration()
+    config.api_key["api-key"] = os.getenv('BREVO_API_KEY')
+
+    api_instance = TransactionalEmailsApi(ApiClient(config))
+    email_data = SendSmtpEmail(
+        sender={"name": "ShelfMate Support", "email": os.getenv('BREVO_SENDER_EMAIL')},
+        to=[{"email": user.email}],
+        subject="Welcome to ShelfMate! 📚✨",
+        html_content=f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; background-color: #f5f5dc; color: #333; margin: 0; padding: 0;">
+            <div style="max-width: 600px; margin: 30px auto; background-color: #ffffff; padding: 20px; border-radius: 12px; 
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); text-align: center; border: 1px solid #ddd;">
+                <h2 style="color: #37474f;">🎉 Welcome to ShelfMate, {user.name}!</h2>
+
+                <p style="font-size: 16px;">We're thrilled to have you join our book-loving community! 📖✨</p>
+
+                <p style="font-size: 16px;">With ShelfMate, you can track your reading, set goals, and get personalized book recommendations.</p>
+
+                <p style="font-size: 16px;">Start exploring now and discover your next favorite book! 🚀</p>
+
+                <br>
+
+                <p style="font-size: 16px;">Happy reading,</p>
+                <p style="font-size: 16px; font-weight: bold; color: #37474f;">ShelfMate Team 📚</p>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <p style="font-size: 14px; color: #666;">
+                        Need help? <a href="mailto:shelfmate.assistant@gmail.com" 
+                        style="color: #0073e6; text-decoration: none;">Contact our support team 📧</a>.
+                    </p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+    )
+
+    try:
+        api_instance.send_transac_email(email_data)
+    except Exception as e:
+        print(f"Failed to send welcome email: {str(e)}")
 
 @auth_routes.route('/signin', methods=['POST'])
 def signin():
@@ -101,10 +152,56 @@ def change_password():
 
     try:
         db.session.commit()
+        send_password_change_email(user)
         return jsonify({"message": "Password changed successfully"}), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": "Error updating password", "error": str(e)}), 500
+
+
+def send_password_change_email(user):
+    config = Configuration()
+    config.api_key["api-key"] = os.getenv('BREVO_API_KEY')
+
+    api_instance = TransactionalEmailsApi(ApiClient(config))
+    email_data = SendSmtpEmail(
+        sender={"name": "ShelfMate Support", "email": os.getenv('BREVO_SENDER_EMAIL')},
+        to=[{"email": user.email}],
+        subject="ShelfMate: Password Changed Successfully 🔒",
+        html_content=f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; background-color: #f5f5dc; color: #333; margin: 0; padding: 0;">
+            <div style="max-width: 600px; margin: 30px auto; background-color: #ffffff; padding: 20px; border-radius: 12px; 
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); text-align: center; border: 1px solid #ddd;">
+                <h2 style="color: #37474f;">🔒 Password Change Confirmation</h2>
+
+                <p style="font-size: 16px;">Dear <strong>{user.name}</strong>,</p>
+
+                <p style="font-size: 16px;">Your password has been successfully changed. If you did not make this change, please contact us immediately.</p>
+
+                <p style="font-size: 16px;">For security reasons, please do not share your password with anyone.</p>
+
+                <br>
+
+                <p style="font-size: 16px;">Best regards,</p>
+                <p style="font-size: 16px; font-weight: bold; color: #37474f;">ShelfMate Team 📚</p>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <p style="font-size: 14px; color: #666;">
+                        Need help? <a href="mailto:shelfmate.assistant@gmail.com" 
+                        style="color: #0073e6; text-decoration: none;">Contact our support team 📧</a>.
+                    </p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+    )
+
+    try:
+        api_instance.send_transac_email(email_data)
+    except Exception as e:
+        print(f"Failed to send password change email: {str(e)}")
 
 @auth_routes.route('/delete-account', methods=['POST'])
 @jwt_required()
@@ -124,11 +221,58 @@ def delete_account():
     try:
         db.session.delete(user)
         db.session.commit()
+
+        send_account_deletion_email(user)
+
         return jsonify({"message": "Account deleted successfully"}), 200
     except Exception as e:
         db.session.rollback()
         return jsonify({"message": "Error deleting account", "error": str(e)}), 500
 
+
+def send_account_deletion_email(user):
+    config = Configuration()
+    config.api_key["api-key"] = os.getenv('BREVO_API_KEY')
+
+    api_instance = TransactionalEmailsApi(ApiClient(config))
+    email_data = SendSmtpEmail(
+        sender={"name": "ShelfMate Support", "email": os.getenv('BREVO_SENDER_EMAIL')},
+        to=[{"email": user.email}],
+        subject="ShelfMate: Account Deletion Confirmation ❌",
+        html_content=f"""
+        <html>
+        <body style="font-family: Arial, sans-serif; background-color: #f5f5dc; color: #333; margin: 0; padding: 0;">
+            <div style="max-width: 600px; margin: 30px auto; background-color: #ffffff; padding: 20px; border-radius: 12px; 
+                        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); text-align: center; border: 1px solid #ddd;">
+                <h2 style="color: #D32F2F;">🚨 Account Deletion Confirmation</h2>
+
+                <p style="font-size: 16px;">Dear <strong>{user.name}</strong>,</p>
+
+                <p style="font-size: 16px;">Your ShelfMate account has been successfully deleted. We’re sorry to see you go!</p>
+
+                <p style="font-size: 16px;">If this was a mistake or you want to restore your account, please contact us immediately.</p>
+
+                <br>
+
+                <p style="font-size: 16px;">Best regards,</p>
+                <p style="font-size: 16px; font-weight: bold; color: #37474f;">ShelfMate Team 📚</p>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <p style="font-size: 14px; color: #666;">
+                        Need help? <a href="mailto:shelfmate.assistant@gmail.com" 
+                        style="color: #0073e6; text-decoration: none;">Contact our support team 📧</a>.
+                    </p>
+                </div>
+            </div>
+        </body>
+        </html>
+        """
+    )
+
+    try:
+        api_instance.send_transac_email(email_data)
+    except Exception as e:
+        print(f"Failed to send account deletion email: {str(e)}")
 @auth_routes.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)
 def refresh():
