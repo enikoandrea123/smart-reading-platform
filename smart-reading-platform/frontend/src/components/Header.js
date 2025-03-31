@@ -31,6 +31,12 @@ const Header = () => {
             <Link to="/track" className="nav-link">Track</Link>
             <Link to="/favorites" className="nav-link">Favorites</Link>
             <Link to="/profile" className="nav-link">Profile</Link>
+            {user.is_admin && (
+              <>
+                <Link to="/manageusers" className="nav-link">Manage Users</Link>
+                <Link to="/statistics" className="nav-link">Statistics</Link>
+              </>
+            )}
           </nav>
           <button onClick={handleLogout} className="logout-button">Log Out</button>
         </div>
