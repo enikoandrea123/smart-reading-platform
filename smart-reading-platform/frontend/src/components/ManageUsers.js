@@ -1,4 +1,6 @@
-  import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { FaTrash } from "react-icons/fa";
+import "./ManageUsers.css";
 
 const ManageUsers = () => {
     const [users, setUsers] = useState([]);
@@ -56,32 +58,23 @@ const ManageUsers = () => {
 
     return (
         <div className="manage-users">
-            <h2>Manage Users</h2>
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Username</th>
-                        <th>Email</th>
-                        <th>Last Login</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {users.map(user => (
-                        <tr key={user.id}>
-                            <td>{user.name}</td>
-                            <td>{user.email}</td>
-                            <td>{user.last_login}</td>
-                            <td>
-                                <button onClick={() => handleDelete(user.id)} className="delete-btn">
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <h2 className="users-title">Manage Users</h2>
+            {error && <p className="error-message">{error}</p>}
+
+            <div className="users-list">
+                {users.map(user => (
+                    <div key={user.id} className="user-card">
+                        <div className="user-info">
+                            <p className="user-name"><strong>{user.name}</strong></p>
+                            <p className="user-email">{user.email}</p>
+                            <p className="user-last-login">Last Login: {user.last_login || "N/A"}</p>
+                        </div>
+                        <button onClick={() => handleDelete(user.id)} className="delete-btn">
+                            <FaTrash className="trash-icon" />
+                        </button>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };

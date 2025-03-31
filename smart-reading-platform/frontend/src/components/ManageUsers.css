@@ -1,0 +1,99 @@
+.manage-users {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #fff8e1;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.users-title {
+  text-align: center;
+  font-size: 2rem;
+  color: #37474f;
+  margin-bottom: 20px;
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+
+.users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.user-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out, background 0.3s ease-in-out;
+}
+
+.user-card:hover {
+  background: #ffecb3;
+  transform: scale(1.02);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: 1.2rem;
+  color: #37474f;
+}
+
+.user-email {
+  font-size: 1rem;
+  color: #555;
+}
+
+.user-last-login {
+  font-size: 0.9rem;
+  color: #757575;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.trash-icon {
+  font-size: 1.4rem;
+  color: #d84315;
+  transition: color 0.3s ease-in-out;
+}
+
+.delete-btn:hover .trash-icon {
+  color: #b71c1c;
+  transform: scale(1.1);
+}
+
+@media (max-width: 600px) {
+  .user-card {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  .delete-btn {
+    align-self: flex-end;
+    margin-top: 10px;
+  }
+}
