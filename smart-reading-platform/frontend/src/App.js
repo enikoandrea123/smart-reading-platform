@@ -17,6 +17,8 @@ import Track from './components/Track';
 import Recommendations from './components/Recommendations';
 import Contact from './components/Contact';
 import ManageUsers from "./components/ManageUsers";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import Statistics from "./components/Statistics";
 import ErrorPage from './components/ErrorPage';
 

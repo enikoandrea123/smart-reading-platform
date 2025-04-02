@@ -24,7 +24,8 @@ const BookCarousel = ({ title, books, loading }) => {
       <h2>{title}</h2>
       <Slider {...settings}>
         {books.map((book) => (
-           <div key={book.id} className="book-item" data-testid={`${title.toLowerCase().replace(" ", "-")}-book-${book.id}`}>            <Link to={`/book/${book.id}`} className="book-link">
+           <div key={book.id} className="book-item" data-testid={`${title.toLowerCase().replace(" ", "-")}-book-${book.id}`}>
+           <Link to={`/book/${book.id}`} className="book-link">
               <img src={book.imageUrl} alt={book.title} />
               <h3>{book.title}</h3>
               <p>{book.author}</p>
