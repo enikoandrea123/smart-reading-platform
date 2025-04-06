@@ -21,6 +21,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Statistics from "./components/Statistics";
 import ErrorPage from './components/ErrorPage';
+import Help from './components/Help';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -63,6 +64,7 @@ function App() {
       <Route path="/about" component={About} />
       <Route path="/forgot-password" component={ForgotPassword} />
       <Route path="/contact" component={Contact} />
+      <Route path="/help" component={Help}/>
 
       <Route path="/explore" component={() => <ProtectedRoute component={Explore} />} />
       <Route path="/profile" component={() => <ProtectedRoute component={Profile} />} />
