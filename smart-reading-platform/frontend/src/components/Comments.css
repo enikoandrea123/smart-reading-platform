@@ -1,0 +1,200 @@
+.comments-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  max-width: 800px;
+  width: 100%;
+  margin: 0 auto;
+  background: #fff8e1;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.5s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #37474f;
+}
+
+p {
+  color: #666;
+  font-style: italic;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+  width: 100%;
+}
+
+.comment-item {
+  background-color: #ffcc80;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 1rem;
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  position: relative;
+}
+
+.comment-item:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+button {
+  background-color: #ff7043;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  font-weight: bold;
+}
+
+button:hover {
+  background-color: #d84315;
+  transform: scale(1.05);
+}
+
+
+button.submit-btn {
+  background-color: #37474f;
+}
+
+button.submit-btn:hover {
+  background-color: #263238;
+}
+
+
+button.delete-btn {
+  background-color: crimson;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+button.delete-btn:hover {
+  background-color: darkred;
+}
+
+
+.textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  transition: border 0.3s ease;
+  margin-bottom: 0.5rem;
+}
+
+.textarea:focus {
+  border-color: #ff7043;
+  outline: none;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+
+.opinion-section svg {
+  cursor: pointer;
+  margin-left: 0.5rem;
+  transition: transform 0.3s ease, fill 0.3s ease;
+}
+
+.opinion-section svg:hover {
+  transform: scale(1.1);
+}
+
+.opinion-section .thumbs-up,
+.opinion-section .thumbs-down {
+  fill: #37474f;
+}
+
+.opinion-section .thumbs-up.active,
+.opinion-section .thumbs-down.active {
+  fill: #ff7043;
+}
+
+.comment-item span {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  color: #37474f;
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+
+.add-comment-container {
+  margin-top: 1rem;
+  background-color: #fff8e1;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.add-comment-container:hover {
+  transform: scale(1.02);
+}
+
+
+.add-comment-container button {
+  background-color: #37474f;
+  color: white;
+  border: none;
+  padding: 12px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  text-align: center;
+  text-decoration: none;
+}
+
+.add-comment-container button:hover  {
+  background-color: #555;
+  transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .comments-container {
+    padding: 15px;
+  }
+
+  h3 {
+    font-size: 1.3rem;
+  }
+
+  .add-comment-container {
+    padding: 15px;
+  }
+
+  .add-comment-container button {
+    font-size: 0.9rem;
+    padding: 8px 12px;
+  }
+}

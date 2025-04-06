@@ -3,6 +3,7 @@ import { useParams } from 'wouter';
 import './BookDetail.css';
 import BookCarousel from './BookCarousel';
 import './BookCarousel.css';
+import Comments from "./Comments";
 
 function BookDetail() {
   const { bookId } = useParams();
@@ -12,8 +13,13 @@ function BookDetail() {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isInReadingList, setIsInReadingList] = useState(false);
   const [recommendedBooks, setRecommendedBooks] = useState([]);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+  if (storedUser) {
+    setUserId(JSON.parse(storedUser).id);
+  }
     if (!bookId) {
       setError("No book ID found in URL.");
       setLoading(false);
@@ -379,6 +385,7 @@ return (
         Preview this book
       </a>
     </div>
+    {userId && <Comments bookId={bookId} userId={userId} />}
 
     {recommendedBooks.length > 0 && (
         <div className="book-carousel-container">
