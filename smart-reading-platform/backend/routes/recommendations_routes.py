@@ -4,6 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..models.favorite import FavoriteBook
 from ..models.reading_list import ReadingList
 import requests
+from sklearn.metrics.pairwise import cosine_similarity
 
 recommendations_routes = Blueprint("recommendations_routes", __name__)
 
@@ -67,7 +68,19 @@ def get_books_by_genre(genres):
                     "rating": book_info.get("averageRating", "N/A"),
                 })
 
+    if len(all_books) > 1:
+        descriptions = [book.get("description", "") for book in all_books if "description" in book]
+        if len(descriptions) > 1:
+            vectorized = vectorize_descriptions(descriptions)
+            similarity_matrix = cosine_similarity(vectorized)
+
     return all_books
+
+
+def vectorize_descriptions(descriptions):
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    vectorizer = TfidfVectorizer()
+    return vectorizer.fit_transform(descriptions)
 
 
 def get_random_recommendations():
